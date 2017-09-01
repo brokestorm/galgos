@@ -1,4 +1,4 @@
-//#include <bits/stdc++.h>
+#include <bits/stdc++.h>
 #include <unordered_map>
 #include <vector>
 
@@ -7,7 +7,6 @@ using namespace std;
 #define PATTERN_SIZE 16
 #define RLE_CODE (PATTERN_SIZE * PATTERN_SIZE)
 #define MAX_KEY_SIZE (PATTERN_SIZE * PATTERN_SIZE)
-
 
 
 class Trie
@@ -29,7 +28,7 @@ private:
 		// last node of the RLE code in the 'trieTree'
 		// Complexity -> O(length_of_rlecode_to_be_searched)
 	//Node * searchNode(int* keys);
-	Node * Trie::searchNode(int* keys);
+	Node * searchNode(int* keys);
 
 
 public:

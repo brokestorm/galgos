@@ -4,10 +4,8 @@
 using namespace std;
 
 int main()
-{   Trie myTrie = new Trie();
+{   Trie *myTrie = new Trie();
 
-	// Creating the Trie Tree using calloc
-	// so that the components are initialised
     int keys1[] = {1, 2, 3, 4, 5, 246};
     int keys2[] = {1, 2, 3, 4, 15, 22, 11};
     int keys3[] = {1, 2, 3, 14, 5, 1, 2, 3, 4, 5};
@@ -26,12 +24,12 @@ int main()
 
 	//printf("Enter the number of keys-\n");
     //scanf("%d", &n);
-    myTrie.insert(keys1, coord01);
-    myTrie.insert(keys2, coord02);
-    myTrie.insert(keys3, coord03);
-    myTrie.insert(keys4, coord04);
-    myTrie.insert(keys5, coord05);
-    myTrie.insert(keys6, coord06);
+    myTrie->insert(keys1, coord01);
+    myTrie->insert(keys2, coord02);
+    myTrie->insert(keys3, coord03);
+    myTrie->insert(keys4, coord04);
+    myTrie->insert(keys5, coord05);
+    myTrie->insert(keys6, coord06);
 
 /*
     printf("\n");   // Just to make the output more readable
