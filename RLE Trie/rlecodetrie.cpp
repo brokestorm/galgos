@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Trie::Trie ()
+Trie::Trie()
 {
 	root = new Node();
 }
@@ -12,24 +12,24 @@ Trie::Trie ()
 // the coordinates from the corresponding template.
 void Trie::insert(int* keys, pair<int, int> coordinates)
 {
-    Node *traverse = root;
+	Node *traverse = root;
 
-    while (*keys >= 0 && *keys <= RLE_CODE) {     // Until there is something to process
-        if (traverse->children[*keys] == NULL) 
-        {
-            // There is no node in 'trieTree' corresponding to this RLE code
+	while (*keys >= 0 && *keys <= RLE_CODE) {     // Until there is something to process
+		if (traverse->children[*keys] == NULL)
+		{
+			// There is no node in 'trieTree' corresponding to this RLE code
 
-            // Allocate using calloc(), so that components are initialised
-            //traverse->children[*keys] = (struct node *) calloc(1, sizeof(struct node));
-            traverse->children[*keys] = new Node();
-            traverse->children[*keys]->parent = traverse;  // Assigning parent
-        }
+			// Allocate using calloc(), so that components are initialised
+			//traverse->children[*keys] = (struct node *) calloc(1, sizeof(struct node));
+			traverse->children[*keys] = new Node();
+			traverse->children[*keys]->parent = traverse;  // Assigning parent
+		}
 
-        traverse = traverse->children[*keys];
-        ++keys; // The next element of the RLE code
-    }
+		traverse = traverse->children[*keys];
+		++keys; // The next element of the RLE code
+	}
 
-   traverse->occurrences.push_back(coordinates);      // associates the RLE code with the coordinates from the template which is being analized
+	traverse->occurrences.push_back(coordinates);      // associates the RLE code with the coordinates from the template which is being analized
 }
 
 
@@ -40,42 +40,52 @@ void Trie::insert(int* keys, pair<int, int> coordinates)
 // Complexity -> O(length_of_rlecode_to_be_searched)
 bool Trie::searchKey(int* keys)
 {	// Function is very similar to insert() function
-    while (*keys >= 0 && *keys <= RLE_CODE) {
-        if (treeNode->children[*keys] != NULL) {
-            treeNode = treeNode->children[*keys];
-            ++keys;
-        } else {
-            break;
-        }
-    }
 
-    if (*keys >= 0 && *keys <= RLE_CODE && treeNode->occurrences.size() != 0) { // NEED REVISION
-        // keys found
-        return true;
-    } else {
-        // keys not found
-        return false;
-    }
+	Node* treeNode = root;
+
+	while (*keys >= 0 && *keys <= RLE_CODE) {
+		if (treeNode->children[*keys] != NULL) {
+			treeNode = treeNode->children[*keys];
+			++keys;
+		}
+		else {
+			break;
+		}
+	}
+
+	if (*keys >= 0 && *keys <= RLE_CODE && treeNode->occurrences.size() != 0) { // NEED REVISION
+																				// keys found
+		return true;
+	}
+	else {
+		// keys not found
+		return false;
+	}
 }
-struct node * Trie::searchNode(int* keys)
-{	
-    // Function is very similar to insert() function
-    while (*keys >= 0 && *keys <= RLE_CODE) {
-        if (treeNode->children[*keys] != NULL) {
-            treeNode = treeNode->children[*keys];
-            ++keys;
-        } else {
-            break;
-        }
-    }
 
-    if (*keys >= 0 && *keys <= RLE_CODE && treeNode->occurrences.size() != 0) { // NEED REVISION
-        // keys found
-        return treeNode;
-    } else {
-        // keys not found
-        return NULL;
-    }
+Trie::Node * Trie::searchNode(int* keys)
+{
+	Node* treeNode = root;
+
+	// Function is very similar to insert() function
+	while (*keys >= 0 && *keys <= RLE_CODE) {
+		if (treeNode->children[*keys] != NULL) {
+			treeNode = treeNode->children[*keys];
+			++keys;
+		}
+		else {
+			break;
+		}
+	}
+
+	if (*keys >= 0 && *keys <= RLE_CODE && treeNode->occurrences.size() != 0) { // NEED REVISION
+																				// keys found
+		return treeNode;
+	}
+	else {
+		// keys not found
+		return NULL;
+	}
 }
 
 // Searches the RLE Code first, if not found, does nothing
@@ -83,114 +93,114 @@ struct node * Trie::searchNode(int* keys)
 
 void Trie::remove(int *keys)
 {
-    Node* trieNode = searchNode(keys);
+	Node* trieNode = searchNode(keys);
 
-    if (trieNode == NULL) {
-        // keys not found
-        return;
-    }
+	if (trieNode == NULL) {
+		// keys not found
+		return;
+	}
 
-    trieNode->occurrences.pop_back();    // Deleting the occurence
+	trieNode->occurrences.pop_back();    // Deleting the occurence
 
-    // 'noChild' indicates if the node is a leaf node
-    bool noChild = true;
+										 // 'noChild' indicates if the node is a leaf node
+	bool noChild = true;
 
-    int childCount = 0;
-    // 'childCount' has the number of children the current node
-    // has which actually tells us if the node is associated with
-    // another RLE Code .This will happen if 'childCount' != 0.
-    int i;
+	int childCount = 0;
+	// 'childCount' has the number of children the current node
+	// has which actually tells us if the node is associated with
+	// another RLE Code .This will happen if 'childCount' != 0.
+	int i;
 
-    // Checking children of current node
-    for (i = 0; i < RLE_CODE; ++i) {
-        if (trieNode->children[i] != NULL) {
-            noChild = false;
-            ++childCount;
-        }
-    }
+	// Checking children of current node
+	for (i = 0; i < RLE_CODE; ++i) {
+		if (trieNode->children[i] != NULL) {
+			noChild = false;
+			++childCount;
+		}
+	}
 
-    if (!noChild) {
-        // The node has children, which means that the RLE code whose
-        // occurrence was just removed is a prefix
-        // So, logically no more nodes have to be deleted
-        return;
-    }
+	if (!noChild) {
+		// The node has children, which means that the RLE code whose
+		// occurrence was just removed is a prefix
+		// So, logically no more nodes have to be deleted
+		return;
+	}
 
-    Node * parentNode = root;     // variable to assist in traversal
+	Node * parentNode = root;     // variable to assist in traversal
 
-    while (trieNode->occurrences.size() == 0 && trieNode->parent != NULL && childCount == 0) {
-        // trieNode->occurrences.size() -> tells if the node is associated with another RLE CODE
-        //
-        // trieNode->parent != NULL -> is the base case sort-of condition, we simply ran
-        // out of nodes to be deleted, as we reached the root
-        //
-        // childCount -> does the same thing as explained in the beginning, to every node
-        // we reach
+	while (trieNode->occurrences.size() == 0 && trieNode->parent != NULL && childCount == 0) {
+		// trieNode->occurrences.size() -> tells if the node is associated with another RLE CODE
+		//
+		// trieNode->parent != NULL -> is the base case sort-of condition, we simply ran
+		// out of nodes to be deleted, as we reached the root
+		//
+		// childCount -> does the same thing as explained in the beginning, to every node
+		// we reach
 
- 		childCount = 0;
-        parentNode = trieNode->parent;
+		childCount = 0;
+		parentNode = trieNode->parent;
 
-        for (i = 0; i < RLE_CODE; ++i) {
-        	if (parentNode->children[i] != NULL) {
-        		if (trieNode == parentNode->children[i]) {
-        			// the child node from which we reached
+		for (i = 0; i < RLE_CODE; ++i) {
+			if (parentNode->children[i] != NULL) {
+				if (trieNode == parentNode->children[i]) {
+					// the child node from which we reached
 					// the parent, this is to be deleted
-	                parentNode->children[i] = NULL;
-	                free(trieNode);
-	        		trieNode = parentNode;
-	            } else {
-	            	++childCount;
+					parentNode->children[i] = NULL;
+					free(trieNode);
+					trieNode = parentNode;
+				}
+				else {
+					++childCount;
 				}
 			}
-        }
-    }
+		}
+	}
 }
 
 // Prints the 'trieTree' in a Pre-Order or a DFS manner
 // which automatically results in a Lexicographical Order
 void Trie::lexicographicalPrint(vector<int> keys)
 {
-    int i;
-    bool noChild = true;
+	int i;
+	bool noChild = true;
 
-    if (trieTree->occurrences.size() != 0) {
-        // Condition trie_tree->occurrences.size() != 0,
-        // is a neccessary and sufficient condition to
-        // tell if a node is associated with a rle code or not
+	Node* trieNode = root;
 
-        vector<int>::iterator keyItr = keys.begin();
+	if (trieNode->occurrences.size() != 0) {
+		// Condition trie_tree->occurrences.size() != 0,
+		// is a neccessary and sufficient condition to
+		// tell if a node is associated with a rle code or not
 
-        while (keyItr != keys.end()) {
-            printf("%d", *keyItr);
-            ++keyItr;
-        }
-        printf(" -> @ Coordinates -> ");
+		vector<int>::iterator keyItr = keys.begin();
 
-        vector<int>::iterator counter = trieTree->occurrences.begin();
-        // This is to print the occurences of the rlecode
+		while (keyItr != keys.end()) {
+			printf("%d", *keyItr);
+			++keyItr;
+		}
+		printf(" -> @ Coordinates -> ");
 
-        while (counter != trieTree->occurrences.end()) {
-            printf("%d, ", *counter);
-            ++counter;
-        }
+		auto counter = trieNode->occurrences.begin();
+		// This is to print the occurences of the rlecode
 
-        printf("\n");
-    }
+		while (counter != trieNode->occurrences.end()) {
+			printf("%d, ", *counter);
+			++counter;
+		}
 
-    for (i = 0; i < RLE_CODE; ++i) {
-        if (trieTree->children[i] != NULL) {
-            noChild = false;
-            keys.push_back(i);   // Select a child
+		printf("\n");
+	}
 
-            // and explore everything associated with the cild
-            lexicographicalPrint(trieTree->children[i], keys);
-            keys.pop_back();
-            
-        }
-    }
+	for (i = 0; i < RLE_CODE; ++i) {
+		if (trieNode->children[i] != NULL) {
+			noChild = false;
+			keys.push_back(i);   // Select a child
 
-    keys.pop_back();
+								 // and explore everything associated with the cild
+			lexicographicalPrint(keys);		// trieNode->children[i], 
+			keys.pop_back();
+
+		}
+	}
+
+	keys.pop_back();
 }
-
-
-
