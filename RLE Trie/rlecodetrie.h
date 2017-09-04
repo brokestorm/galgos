@@ -42,7 +42,7 @@ class Trie
 	
 		// Searches the RLE Code first, if not found, does nothing
 		// if found, deletes the nodes corresponding to the RLE Code
-		void remove(vector <int> keys);
+		void removeKey(vector <int> keys);
 	
 		// Prints the 'trieTree' in a Pre-Order or a DFS manner
 		// which automatically results in a Lexicographical Order
