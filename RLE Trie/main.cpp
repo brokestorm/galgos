@@ -102,6 +102,8 @@ int main()
         printf("This key wasn't inserted\n");
 
     myTrie->lexicographicalPrint(keys1);
+    printf("\n");
     myTrie->lexicographicalPrint(keys2);
+    printf("\n");
     return 0;
 }
