@@ -5,7 +5,7 @@
 using namespace std;
 
 int main()
-{   Trie *myTrie = new Trie();
+{   Trie *myTrie = new Trie(16);
 
     vector <int> keys1 = {1, 2, 3, 4, 5, 246};
     vector <int> keys2 = {1, 2, 3, 4, 15, 22, 11};
@@ -93,11 +93,6 @@ int main()
         myTrie->lexicographicalPrint(keys7);
     else
         printf("This key wasn't inserted\n");
-    
-    if(myTrie->searchKey(keys8))
-        myTrie->lexicographicalPrint(keys8);
-    else
-        printf("This key wasn't inserted\n");
 
     myTrie->removeKey(keys1);
     printf("OK!\n");
@@ -110,8 +105,6 @@ int main()
     myTrie->removeKey(keys6);
     printf("OK!\n");
     myTrie->removeKey(keys7);
-    printf("OK!\n");
-    myTrie->removeKey(keys8);
     printf("OK!\n");
     
     if(myTrie->searchKey(keys1))
@@ -148,15 +141,8 @@ int main()
         myTrie->lexicographicalPrint(keys7);
     else
         printf("This key wasn't inserted\n");
-    
-    if(myTrie->searchKey(keys8))
-        myTrie->lexicographicalPrint(keys8);
-    else
-        printf("This key wasn't inserted\n");
 
     myTrie->lexicographicalPrint(keys1);
     myTrie->lexicographicalPrint(keys2);
     return 0;
 }
-
-
