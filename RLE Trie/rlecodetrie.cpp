@@ -1,4 +1,3 @@
-#include <utility>
 #include "rlecodetrie.h"
 
 using namespace std;
