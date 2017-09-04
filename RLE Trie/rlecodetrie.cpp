@@ -2,8 +2,8 @@
 
 using namespace std;
 
-Trie::Trie()
-{
+Trie::Trie(int patternSize)
+{	maxRleCode = patternSize * patternSize;
 	root = new Node();
 }
 
@@ -63,7 +63,7 @@ bool Trie::searchKey(vector <int> keys)
 // if not found, returns NULL,
 // if found, returns poniter pointing to the
 // last node of the RLE code in the 'trieTree'
-// Complexity -> O(length_of_rlecode_to_be_searched)
+// Complexity -> O(length_of_maxRleCode_to_be_searched)
 Trie::Node * Trie::searchNode(vector<int> keys)
 {
 	Node* trieNode = root;
@@ -113,7 +113,7 @@ void Trie::removeKey(vector<int>keys)
 	int i;
 
 	// Checking children of current node
-	for (i = 0; i <= RLE_CODE; ++i) {
+	for (i = 0; i <= maxRleCode; ++i) {
 		if (trieNode->children[i] != NULL) {
 			noChild = false;
 			++childCount;
@@ -138,7 +138,7 @@ void Trie::removeKey(vector<int>keys)
 		childCount = 0;
 		parentNode = trieNode->parent;
 
-		for (i = 0; i <= RLE_CODE; ++i) {
+		for (i = 0; i <= maxRleCode; ++i) {
 			if (parentNode->children[i] != NULL) {
 				if (trieNode == parentNode->children[i]) {
 					// the child node from which we reached
@@ -170,7 +170,7 @@ void Trie::lexicographicalPrint(vector<int> keys)
 	    return;
 	}
 
-    //counter to pass through the key
+    	//counter to pass through the key
 	vector<int>::iterator counter = keys.begin();
     
 	while (counter != keys.end()) {
@@ -186,7 +186,7 @@ void Trie::lexicographicalPrint(vector<int> keys)
 	cout << "@ Coordinate -> ";
 		
 	//this format is useful for printing pairs
-    for (auto &x : trieNode->occurrences)
+    	for (auto &x : trieNode->occurrences)
 	{
 	   	cout << x.first << ":" << x.second << endl;
 	}
