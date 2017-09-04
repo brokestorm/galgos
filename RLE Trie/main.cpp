@@ -12,21 +12,50 @@ int main()
     vector <int> keys3 = {1, 2, 3, 14, 5, 1, 2, 3, 4, 5};
     vector <int> keys4 = {1, 2, 13, 4, 5, 20, 21, 22, 23, 24, 25};
     vector <int> keys5 = {1, 12, 3, 4, 5, 4, 3, 2, 1};
-    vector <int> keys6 = {0, 255};
+    vector <int> keys6 = {0, 256};
+    vector <int> keys7 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                          1, 1, 1, 1, 1, 1};
 
-    pair<int, int> coord01, coord02, coord03, coord04, coord05, coord06;
-    coord01 = make_pair(1,2);
-    coord02 = make_pair(2,3);
-    coord03 = make_pair(3,4);
-    coord04 = make_pair(4,5);
-    coord05 = make_pair(5,6);
-    coord06 = make_pair(6,7);
+
+    pair<int, int> coord01, coord02, coord03, coord04, coord05, coord06, coord07, coord08;
+    coord01 = make_pair(1,25);
+    coord02 = make_pair(2,24);
+    coord03 = make_pair(3,42);
+    coord04 = make_pair(4,32);
+    coord05 = make_pair(5,12);
+    coord06 = make_pair(6,23);
+    coord07 = make_pair(7,12);
 
     myTrie->insert(keys1, coord01);
     myTrie->insert(keys2, coord02);
     myTrie->insert(keys3, coord03);
     myTrie->insert(keys5, coord05);
     myTrie->insert(keys6, coord06);
+    myTrie->insert(keys7, coord07);
     
 	cout << "insert done" << endl;
     
@@ -59,6 +88,16 @@ int main()
         myTrie->lexicographicalPrint(keys6);
     else
         printf("This key wasn't inserted\n");
+        
+    if(myTrie->searchKey(keys7))
+        myTrie->lexicographicalPrint(keys7);
+    else
+        printf("This key wasn't inserted\n");
+    
+    if(myTrie->searchKey(keys8))
+        myTrie->lexicographicalPrint(keys8);
+    else
+        printf("This key wasn't inserted\n");
 
     myTrie->removeKey(keys1);
     printf("OK!\n");
@@ -69,6 +108,10 @@ int main()
     myTrie->removeKey(keys5);
     printf("OK!\n");
     myTrie->removeKey(keys6);
+    printf("OK!\n");
+    myTrie->removeKey(keys7);
+    printf("OK!\n");
+    myTrie->removeKey(keys8);
     printf("OK!\n");
     
     if(myTrie->searchKey(keys1))
@@ -100,10 +143,20 @@ int main()
         myTrie->lexicographicalPrint(keys6);
     else
         printf("This key wasn't inserted\n");
+        
+    if(myTrie->searchKey(keys7))
+        myTrie->lexicographicalPrint(keys7);
+    else
+        printf("This key wasn't inserted\n");
+    
+    if(myTrie->searchKey(keys8))
+        myTrie->lexicographicalPrint(keys8);
+    else
+        printf("This key wasn't inserted\n");
 
     myTrie->lexicographicalPrint(keys1);
-    printf("\n");
     myTrie->lexicographicalPrint(keys2);
-    printf("\n");
     return 0;
 }
+
+
