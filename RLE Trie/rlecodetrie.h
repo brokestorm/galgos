@@ -7,18 +7,14 @@ using namespace std;
 
 #define PATTERN_SIZE 16
 #define RLE_CODE (PATTERN_SIZE * PATTERN_SIZE)
-#define MAX_KEY_SIZE (PATTERN_SIZE * PATTERN_SIZE)
-
 
 class Trie
 {
 	private:
 		struct Node {
-		public:
-			Node * parent;
-			//struct node * children[RLE_CODE];
-			unordered_map < int, Node *> children;
-			vector<pair<int, int> > occurrences;
+		    	Node * parent;
+		    	unordered_map < int, Node *> children;
+		    	vector<pair<int, int> > occurrences; // stores the coordinates and marks the end of each rle code
 		};
 	
 		Node * root;
@@ -38,6 +34,7 @@ class Trie
 		// the coordinates from the corresponding template.
 		void insert(vector <int> keys, pair<int, int> coordinates);
 	
+	    // Verify either if the key exists or not, returns a bool value
 		bool searchKey(vector <int> keys);
 	
 		// Searches the RLE Code first, if not found, does nothing
@@ -47,6 +44,7 @@ class Trie
 		// Prints the 'trieTree' in a Pre-Order or a DFS manner
 		// which automatically results in a Lexicographical Order
 		void lexicographicalPrint(vector<int> keys);
-	
+	    
+	    //Constructor
 		Trie();
 };
