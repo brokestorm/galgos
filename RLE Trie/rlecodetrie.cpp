@@ -19,9 +19,6 @@ void Trie::insert(vector <int> keys, pair<int, int> coordinates)
 		if (traverse->children[*counter] == NULL)
 		{
 			// There is no node in 'trieTree' corresponding to this RLE code
-
-			// Allocate using calloc(), so that components are initialised
-			//traverse->children[*keys] = (struct node *) calloc(1, sizeof(struct node));
 			traverse->children[*counter] = new Node();
 			traverse->children[*counter]->parent = traverse;  // Assigning parent
 		}
@@ -56,7 +53,7 @@ bool Trie::searchKey(vector <int> keys)
 		}
 	}
 
-	if (treeNode->occurrences.size() != 0) { // NEED REVISION
+	if (treeNode->occurrences.size() != 0) { 
 		// keys found
 		return true;
 	}
@@ -68,14 +65,13 @@ bool Trie::searchKey(vector <int> keys)
 
 Trie::Node * Trie::searchNode(vector<int> keys)
 {
-	Node* treeNode = root;
+	Node* trieNode = root;
 
 	// Function is very similar to insert() function
-	
 	vector<int>::iterator counter = keys.begin(); 
 	while (counter!= keys.end()) {
-		if (treeNode->children[*counter] != NULL) {
-			treeNode = treeNode->children[*counter];
+		if (trieNode->children[*counter] != NULL) {
+			trieNode = trieNode->children[*counter];
 			++counter;
 		}
 		else {
@@ -83,9 +79,9 @@ Trie::Node * Trie::searchNode(vector<int> keys)
 		}
 	}
 
-	if (treeNode->occurrences.size() != 0) { // NEED REVISION
+	if (trieNode->occurrences.size() != 0) {
 		// keys found
-		return treeNode;
+		return trieNode;
 	}
 	else {
 		// keys not found
@@ -95,8 +91,7 @@ Trie::Node * Trie::searchNode(vector<int> keys)
 
 // Searches the RLE Code first, if not found, does nothing
 // if found, deletes the nodes corresponding to the RLE Code
-
-void Trie::remove(vector<int>keys)
+void Trie::removeKey(vector<int>keys)
 {
 	Node* trieNode = searchNode(keys);
 
@@ -178,9 +173,9 @@ void Trie::lexicographicalPrint(vector<int> keys)
 
 	vector<int>::iterator counter = keys.begin();
     
-	while (counter != keys.end()) {
+	    while (counter != keys.end()) {
 		if (trieNode->children[*counter] != NULL) {
-			cout << *counter;
+			cout << *counter << " -> ";
 			trieNode = trieNode->children[*counter];
 			++counter;
 		}
@@ -188,12 +183,12 @@ void Trie::lexicographicalPrint(vector<int> keys)
 			break;
 		}
 	}
-	printf(" -> @ Coordinate -> ");
+	    printf("@ Coordinate -> ");
 		
     	for (auto &x : trieNode->occurrences)
-	{
-	    cout << x.first << ":" << x.second << endl;
-	}
+	    {
+	    	cout << x.first << ":" << x.second << endl;
+	    }
 	
 }
 
