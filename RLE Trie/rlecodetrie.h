@@ -34,7 +34,7 @@ class Trie
 		// the coordinates from the corresponding template.
 		void insert(vector <int> keys, pair<int, int> coordinates);
 	
-	    // Verify either if the key exists or not, returns a bool value
+	   	// Verify either if the key exists or not, returns a bool value
 		bool searchKey(vector <int> keys);
 	
 		// Searches the RLE Code first, if not found, does nothing
@@ -45,6 +45,6 @@ class Trie
 		// which automatically results in a Lexicographical Order
 		void lexicographicalPrint(vector<int> keys);
 	    
-	    //Constructor
+	    	//Constructor
 		Trie();
 };
