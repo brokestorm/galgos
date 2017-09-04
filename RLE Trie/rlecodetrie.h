@@ -5,9 +5,6 @@
 
 using namespace std;
 
-#define PATTERN_SIZE 16
-#define RLE_CODE (PATTERN_SIZE * PATTERN_SIZE)
-
 class Trie
 {
 	private:
@@ -25,6 +22,8 @@ class Trie
 		// last node of the RLE code in the 'trieTree'
 		// Complexity -> O(length_of_rlecode_to_be_searched)
 		Node * searchNode(vector <int> keys);
+		
+		int maxRleCode; // parameter that stores the maximum size of a branch
 	
 	
 	public:
@@ -34,7 +33,7 @@ class Trie
 		// the coordinates from the corresponding template.
 		void insert(vector <int> keys, pair<int, int> coordinates);
 	
-	   	// Verify either if the key exists or not, returns a bool value
+	    // Verify either if the key exists or not, returns a bool value
 		bool searchKey(vector <int> keys);
 	
 		// Searches the RLE Code first, if not found, does nothing
@@ -45,6 +44,6 @@ class Trie
 		// which automatically results in a Lexicographical Order
 		void lexicographicalPrint(vector<int> keys);
 	    
-	    	//Constructor
-		Trie();
+	    //Constructor
+		Trie(int);
 };
