@@ -2,8 +2,8 @@
 
 using namespace std;
 
-Trie::Trie(int patternSize)
-{	maxRleCode = patternSize * patternSize;
+Trie::Trie()
+{	
 	root = new Node();
 }
 
@@ -49,14 +49,7 @@ bool Trie::searchKey(vector <int> keys)
 		}
 	}
 
-	if (treeNode->occurrences.size() != 0) { 
-		// keys found
-		return true;
-	}
-	else {
-		// keys not found
-		return false;
-	}
+	return (treeNode->occurrences.size() != 0);
 }
 
 // Searches for the occurence of a RLE code in 'trieTree',
@@ -110,11 +103,10 @@ void Trie::removeKey(vector<int>keys)
 	// 'childCount' has the number of children the current node
 	// has which actually tells us if the node is associated with
 	// another RLE Code .This will happen if 'childCount' != 0.
-	int i;
-
 	// Checking children of current node
-	for (i = 0; i <= maxRleCode; ++i) {
-		if (trieNode->children[i] != NULL) {
+	for(auto myPair : trieNode->children)
+	{	if (myPair.second != NULL) 
+		{
 			noChild = false;
 			++childCount;
 		}
@@ -129,7 +121,8 @@ void Trie::removeKey(vector<int>keys)
 
 	Node * parentNode = root;     // variable to assist in traversal
 
-	while (trieNode->occurrences.size() == 0 && trieNode->parent != NULL && childCount == 0) {
+	while (trieNode->occurrences.size() == 0 && trieNode->parent != NULL && childCount == 0) 
+	{
 		// trieNode->occurrences.size() -> tells if the node is associated with another RLE CODE
 		// trieNode->parent != NULL -> is the base case sort-of condition, we simply ran
 		// out of nodes to be deleted, as we reached the root
@@ -138,12 +131,13 @@ void Trie::removeKey(vector<int>keys)
 		childCount = 0;
 		parentNode = trieNode->parent;
 
-		for (i = 0; i <= maxRleCode; ++i) {
-			if (parentNode->children[i] != NULL) {
-				if (trieNode == parentNode->children[i]) {
+		for(auto &myPair2 : parentNode->children)
+		{
+			if (myPair2.second != NULL) {
+				if (trieNode == myPair2.second) {
 					// the child node from which we reached
 					// the parent, this is to be deleted
-					parentNode->children[i] = NULL;
+					myPair2.second = NULL;
 					free(trieNode);
 					trieNode = parentNode;
 				}
@@ -155,43 +149,37 @@ void Trie::removeKey(vector<int>keys)
 	}
 }
 
-// Prints the 'trieTree' in a Pre-Order or a DFS manner
-// which automatically results in a Lexicographical Order
-void Trie::lexicographicalPrint(vector<int> keys)
+// calls Print
+void Trie::lexicographicalPrint()
 {
-	int i;
-	bool noChild = true;
-
 	Node* trieNode = root;
-	
-	if(!searchKey(keys))
-	{
-	    cout << "this key hasn't been inserted yet" << endl;
-	    return;
-	}
+	vector <int> *x = new vector <int> ();
+	cout << endl;
+	Print(trieNode, x);
+	cout << endl;
+	cout << "finished printing" << endl;
 
-    	//counter to pass through the key
-	vector<int>::iterator counter = keys.begin();
-    
-	while (counter != keys.end()) {
-		if (trieNode->children[*counter] != NULL) { //do the key exists in the treeNode?
-			cout << *counter << " -> "; // print the content from the key, if it exists in the treeNode 
-			trieNode = trieNode->children[*counter];
-			++counter;
-		}
-		else {
-			break;
-		}
-	}
-	cout << "@ Coordinate -> ";
-		
-	//this format is useful for printing pairs
-    	for (auto &x : trieNode->occurrences)
-	{
-	   	cout << x.first << ":" << x.second << endl;
-	}
-	
 }
 
 
 
+// Prints the 'trieTree' in a Pre-Order or a DFS manner
+// which automatically results in a Lexicographical Order
+void Trie::Print(Node* trieNode, vector <int>* path){
+	if(trieNode->occurrences.size() != 0)
+	{
+		for(unsigned i = 0; i < path->size(); i++)
+			cout << path->operator[] (i) << " - ";
+		cout << "<" << trieNode->occurrences[0].first << ";" << trieNode->occurrences[0].second << ">" << endl;
+	}
+
+	for(auto &child : trieNode->children){
+		if(child.second == NULL) 
+			continue;
+		else{
+			path->push_back(child.first);
+			Print(child.second, path);
+			path->pop_back();
+		}
+	}
+}
