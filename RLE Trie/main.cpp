@@ -5,7 +5,7 @@
 using namespace std;
 
 int main()
-{   Trie *myTrie = new Trie(16);
+{   Trie *myTrie = new Trie();
 
     vector <int> keys1 = {1, 2, 3, 4, 5, 246};
     vector <int> keys2 = {1, 2, 3, 4, 15, 22, 11};
@@ -57,92 +57,19 @@ int main()
     myTrie->insert(keys6, coord06);
     myTrie->insert(keys7, coord07);
     
-	cout << "insert done" << endl;
+    cout << "insert done" << endl;
     
-    if(myTrie->searchKey(keys1))
-        myTrie->lexicographicalPrint(keys1);
-    else
-        printf("This key wasn't inserted\n");
-
-    if(myTrie->searchKey(keys2))
-        myTrie->lexicographicalPrint(keys2);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys3))
-        myTrie->lexicographicalPrint(keys3);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys4))
-        myTrie->lexicographicalPrint(keys4);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys5))
-        myTrie->lexicographicalPrint(keys5);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys6))
-        myTrie->lexicographicalPrint(keys6);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys7))
-        myTrie->lexicographicalPrint(keys7);
-    else
-        printf("This key wasn't inserted\n");
+    myTrie->lexicographicalPrint();
 
     myTrie->removeKey(keys1);
-    printf("OK!\n");
     myTrie->removeKey(keys3);
-    printf("OK!\n");
-    myTrie->removeKey(keys4);
-    printf("OK!\n");
     myTrie->removeKey(keys5);
-    printf("OK!\n");
     myTrie->removeKey(keys6);
-    printf("OK!\n");
     myTrie->removeKey(keys7);
-    printf("OK!\n");
+
+    cout << "remove done" << endl;
     
-    if(myTrie->searchKey(keys1))
-        myTrie->lexicographicalPrint(keys1);
-    else
-        printf("This key wasn't inserted\n");
+    myTrie->lexicographicalPrint();
 
-    if(myTrie->searchKey(keys2))
-        myTrie->lexicographicalPrint(keys2);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys3))
-        myTrie->lexicographicalPrint(keys3);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys4))
-        myTrie->lexicographicalPrint(keys4);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys5))
-        myTrie->lexicographicalPrint(keys5);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys6))
-        myTrie->lexicographicalPrint(keys6);
-    else
-        printf("This key wasn't inserted\n");
-        
-    if(myTrie->searchKey(keys7))
-        myTrie->lexicographicalPrint(keys7);
-    else
-        printf("This key wasn't inserted\n");
-
-    myTrie->lexicographicalPrint(keys1);
-    myTrie->lexicographicalPrint(keys2);
     return 0;
 }
