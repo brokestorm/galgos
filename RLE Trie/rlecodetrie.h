@@ -24,6 +24,10 @@ class Trie
 		Node * searchNode(vector <int> keys);
 		
 		int maxRleCode; // parameter that stores the maximum size of a branch
+
+		// Prints the 'trieTree' in a Pre-Order or a DFS manner
+		// which automatically results in a Lexicographical Order
+		void Print(Node * trieNode,  vector <int>* path);
 	
 	
 	public:
@@ -40,10 +44,9 @@ class Trie
 		// if found, deletes the nodes corresponding to the RLE Code
 		void removeKey(vector <int> keys);
 	
-		// Prints the 'trieTree' in a Pre-Order or a DFS manner
-		// which automatically results in a Lexicographical Order
-		void lexicographicalPrint(vector<int> keys);
+		// Calls Print
+		void lexicographicalPrint();
 	    
 	    //Constructor
-		Trie(int);
+		Trie();
 };
