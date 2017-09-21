@@ -1,8 +1,4 @@
-#include <iostream>
-#include <stdlib.h>
-#include <random>
-#include <cmath>
-#include "functions.h"
+#include "Simple_LSH_Functions.h"
 
 using namespace std;
 

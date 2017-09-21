@@ -1,3 +1,8 @@
+#include <iostream>
+#include <stdlib.h>
+#include <random>
+#include <cmath>
+
 void CalculateNorm(double* x, int sizeX, double* ret);
 
 void Projection_Symmetric(double* x, int sizeX, double* ret);

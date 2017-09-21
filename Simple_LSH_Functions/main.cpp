@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
-#include "functions.h"
+#include "Simple_LSH_Functions.h"
 #define sizeX 5
 
 using namespace std;
