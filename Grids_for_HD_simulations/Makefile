@@ -1,6 +1,6 @@
 CC=g++
 CXXFLAGS=-std=c++14 -Wall -W
-OBJ=Coordfinder_Fliped.cpp
+OBJ=Coordfinder.cpp
 EXEFILE=HDlistBuilder
 
 $(EXEFILE):$(OBJ) 
