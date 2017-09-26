@@ -10,14 +10,14 @@ int main (){
 	int i = 0, j = 0;
 	int dim = 0;
 
-	pGrid = fopen("Strebelle_HD_Lists\HDlist2_Strebelle.csv", "r");
+	pGrid = fopen("Strebelle_HD_Lists/HDlist_Strebelle.csv", "r");
 	if(pGrid == NULL)
 	{
 		printf("Ocorreu um erro ao abrir o arquivo\n");
 		exit(1);
 	}
 
-	pNewFile = fopen("HDList2_NEW.txt", "w");
+	pNewFile = fopen("HDList_NEW.txt", "w");
 	if(pNewFile == NULL)
 	{
 		printf("Ocorreu um erro ao criar um novo arquivo\n");
