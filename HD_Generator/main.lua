@@ -36,6 +36,7 @@ end
 ---------------------------------LOADING FILES-------------------------------------------
 
 function love.load()
+  
 	data = love.filesystem.newFile("HD_config.txt")
 	data:open("r")
 	
@@ -69,7 +70,6 @@ function love.load()
     HD.color.blue = 255
   end
   
-  
   -- Adjusting scale to a maximum
   desktop_width, desktop_height = love.window.getDesktopDimensions(1)
   if training_Image.size.x * scale >= desktop_width then
@@ -77,6 +77,16 @@ function love.load()
   end
   if training_Image.size.y * scale >= desktop_height then
     scale = (desktop_height - 80) / training_Image.size.y
+  end
+  
+  -- Adjusting scale to a minimum
+  if (scale <= 0) then
+    scale = 0.1
+  end
+  
+  -- Adjusting HD.radius to a minimum
+  if (HD.radius < 0.5) then
+    HD.radius = 0.5
   end
   
   -- Adjusting HD.radius to a maximum
@@ -103,23 +113,25 @@ end
 ---------------------------------UPDATING IMAGE-------------------------------------------
 
 function love.update(dt)
+  
 	cursor.x = love.mouse.getX()
 	cursor.y = love.mouse.getY()
 	
-	if (cursor.x - (HD.radius * scale) < 0) then
-		cursor.x = (HD.radius * scale)
+  -- Selection wont be out from border this way!
+	if (cursor.x - (HD.radius * scale)/ 2 < 0) then
+		cursor.x = (HD.radius * scale)/2
 	end	
 	
-	if (cursor.x + (HD.radius * scale) > training_Image.size.x * scale) then
-		cursor.x = (training_Image.size.x * scale) - (HD.radius * scale)
+	if (cursor.x + (HD.radius * scale)/ 2 > training_Image.size.x * scale) then
+		cursor.x = (training_Image.size.x * scale) - (HD.radius * scale)/2
 	end	
 	
-	if (cursor.y - (HD.radius * scale) < 0) then
-		cursor.y = (HD.radius * scale)
+	if (cursor.y - (HD.radius * scale)/2 < 0) then
+		cursor.y = (HD.radius * scale)/2
 	end	
 	
-	if (cursor.y + (HD.radius * scale) > training_Image.size.y*scale) then
-		cursor.y = (training_Image.size.x * scale) - (HD.radius * scale)
+	if (cursor.y + (HD.radius * scale)/2 > training_Image.size.y*scale) then
+		cursor.y = (training_Image.size.x * scale) - (HD.radius * scale)/2
 	end	
 	
 	if (isCircle) then			-- ESTE BLOCO NAO PERMITE QUE UM CÍRCULO SOBREESCREVA OUTRO

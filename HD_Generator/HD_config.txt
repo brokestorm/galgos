@@ -4,13 +4,13 @@ Hard Data Matrix Path:
 images/Strebelle250x250.csv
 Save Directory (Where HD files will be placed. It has to exist!):
 HardData
-Width:
+Image Width:
 250
-Height:
+Image Height:
 250
 Window Scale (Default = 1):
 10
-Hard Data Radius Size(Defaut = 1, Values between 0 and 1 will be treated as a pixel):
+Hard Data Radius Size(Defaut = 1, Values minor than 1 will be treated as a pixel):
 7
 Hard Data Selection color - RED:
 0
