@@ -116,6 +116,7 @@ function love.load()
   
   -- Sets image scaled
 	love.window.setMode(training_Image.size.x * scale, training_Image.size.y * scale)
+  canvas = love.graphics.newCanvas( )
 
 	data:close()
 end
@@ -236,7 +237,10 @@ function love.quit()
       end   
     end   
   end
+  
   f:close()
+  
+  -- Counting Hard Datas
   local count = 0
   if(HD.radius >= 1) then
     for current=1, HD.numPoints do
@@ -293,12 +297,14 @@ function love.quit()
       end
     end
   end
-  
-    
   file:close()
- 
-  local screenshot = love.graphics.newScreenshot()
-  screenshot:encode("png", "HD"..count..".png")
   
+  h = training_Image.size.y *scale
+  w = training_Image.size.x *scale
+  
+  img =  love.graphics.newScreenshot( )
+  data = img:getString()
+  iData = love.image.newImageData( w, h, data )
+  iData:encode( "png", hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png" )
 end
 
