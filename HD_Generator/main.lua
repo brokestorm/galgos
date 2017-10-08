@@ -11,6 +11,11 @@ end
 
 HD = {
 	radius;
+  color = {
+    red,
+    green,
+    blue
+  };
 	numPoints = 0;
 }
 
@@ -27,6 +32,8 @@ training_Image = {
 function square(x)
 	return x*x
 end
+
+---------------------------------LOADING FILES-------------------------------------------
 
 function love.load()
 	data = love.filesystem.newFile("HD_config.txt")
@@ -47,6 +54,21 @@ function love.load()
 	training_Image.size.y = tonumber(parameters[10])
   scale = tonumber(parameters[12])
 	HD.radius = tonumber(parameters[14])
+  HD.color.red = tonumber(parameters[16])
+  HD.color.green = tonumber(parameters[18])
+  HD.color.blue = tonumber(parameters[20])
+  
+  -- Adjusting Color to a maximum
+  if(HD.color.red > 255) then
+    HD.color.red = 255
+  end
+  if(HD.color.green > 255) then
+    HD.color.green = 255
+  end
+  if(HD.color.blue > 255) then
+    HD.color.blue = 255
+  end
+  
   
   -- Adjusting scale to a maximum
   desktop_width, desktop_height = love.window.getDesktopDimensions(1)
@@ -77,6 +99,8 @@ function love.load()
 
 	data:close()
 end
+
+---------------------------------UPDATING IMAGE-------------------------------------------
 
 function love.update(dt)
 	cursor.x = love.mouse.getX()
@@ -114,13 +138,14 @@ function love.update(dt)
    	end
 end
 
+---------------------------------DRAWING-------------------------------------------
 
 function love.draw()
 	love.graphics.setColor(255,255,255) 
 
 	love.graphics.draw(training_Image.image, 0,0, 0, scale, scale)
 
-	love.graphics.setColor(255,0,0)
+	love.graphics.setColor(HD.color.red,HD.color.green,HD.color.blue)
 	love.graphics.circle("line", cursor.x, cursor.y, (HD.radius * scale), 100)
 	
 
@@ -138,6 +163,12 @@ end
 function love.keypressed(enter)
 	love.event.quit()
 end
+
+function love.keypressed(escape)
+	love.event.quit()
+end
+
+---------------------------------QUITING AND MAKING HD FILE-------------------------------------------
 
 function love.quit()
 
