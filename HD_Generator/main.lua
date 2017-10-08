@@ -1,4 +1,5 @@
 -- Program for building simple Hard Data
+version = "1.0.0"
 
 cursor = {x=0, y=0}
 coordX = {}
@@ -36,6 +37,8 @@ end
 ---------------------------------LOADING FILES-------------------------------------------
 
 function love.load()
+  
+  love.window.setTitle("HD Generator - " .. version)
   
 	data = love.filesystem.newFile("HD_config.txt")
 	data:open("r")
@@ -117,20 +120,21 @@ function love.update(dt)
 	cursor.x = love.mouse.getX()
 	cursor.y = love.mouse.getY()
 	
+  local border_lim = 1.25
   -- Selection wont be out from border this way!
-	if (cursor.x - (HD.radius * scale)/ 2 < 0) then
-		cursor.x = (HD.radius * scale)/2
+	if (cursor.x - (HD.radius * scale)/ border_lim < 0) then
+		cursor.x = (HD.radius * scale) / border_lim
 	end	
 	
-	if (cursor.x + (HD.radius * scale)/ 2 > training_Image.size.x * scale) then
+	if (cursor.x + (HD.radius * scale) / border_lim > training_Image.size.x * scale) then
 		cursor.x = (training_Image.size.x * scale) - (HD.radius * scale)/2
 	end	
 	
-	if (cursor.y - (HD.radius * scale)/2 < 0) then
-		cursor.y = (HD.radius * scale)/2
+	if (cursor.y - (HD.radius * scale) / border_lim < 0) then
+		cursor.y = (HD.radius * scale) / border_lim
 	end	
 	
-	if (cursor.y + (HD.radius * scale)/2 > training_Image.size.y*scale) then
+	if (cursor.y + (HD.radius * scale) / border_lim > training_Image.size.y*scale) then
 		cursor.y = (training_Image.size.x * scale) - (HD.radius * scale)/2
 	end	
 	
@@ -252,7 +256,7 @@ function love.quit()
  
   
   -- print HD points in file txt
-	local file = io.open(hd_directory .. "/HD" .. count .. "_" .. ((os.time())%100000) .. ".txt", "w")
+	local file = io.open(hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HD_" .. count .. ".txt", "w")
   if(HD.radius >= 1) then
     for current=1, HD.numPoints do
       print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")

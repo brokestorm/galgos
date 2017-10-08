@@ -9,7 +9,7 @@ Image Width:
 Image Height:
 250
 Window Scale (Default = 1):
-10
+3
 Hard Data Radius Size(Defaut = 1, Values minor than 1 will be treated as a pixel):
 7
 Hard Data Selection color - RED:
