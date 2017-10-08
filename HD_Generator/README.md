@@ -1,6 +1,8 @@
-HD Generator requires löve installed in your computer in order to work.
+## HD Generator
 
-Pay attention with HD_config file while editing, as it can stop working if the parameters are wrong.
+1. HD Generator requires lÃ¶ve installed in your computer in order to work.
 
-To work, it need to has a Save Directory created, with the name that you used in HD_config.
+2. Pay attention with HD_config file while editing, as it can stop working if the parameters are wrong.
+
+3. It also need a Save Directory created, with the name that you used in HD_config.
 
