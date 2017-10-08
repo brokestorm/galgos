@@ -37,7 +37,7 @@ end
 ---------------------------------LOADING FILES-------------------------------------------
 
 function love.load()
-
+  love.filesystem.setIdentity('HardData')
   love.window.setTitle("HD Generator - " .. version)
   
 	data = love.filesystem.newFile("HD_config.txt")
@@ -185,6 +185,8 @@ function love.mousereleased(x, y, button)
 end
 
 function love.keypressed(enter)
+  local screenshot = love.graphics.newScreenshot()
+  screenshot:encode('png', os.time() .. '.png')
 	love.event.quit()
 end
 
@@ -299,12 +301,14 @@ function love.quit()
   end
   file:close()
   
-  h = training_Image.size.y *scale
-  w = training_Image.size.x *scale
+  --h = training_Image.size.y *scale
+  --w = training_Image.size.x *scale
   
-  img =  love.graphics.newScreenshot( )
-  data = img:getString()
-  iData = love.image.newImageData( w, h, data )
-  iData:encode( "png", hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png" )
+  --img =  love.graphics.newScreenshot( )
+  --data = img:getString()
+  --iData = love.image.newImageData( w, h, data )
+  --iData:encode( "png", hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png" )
+  --love.filesystem.write(((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png", data)
+  
 end
 

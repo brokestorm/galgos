@@ -3,7 +3,7 @@ images/Strebelle_B_W_250x250.jpg
 Hard Data Matrix Path:
 images/Strebelle250x250.csv
 Save Directory (Where HD files will be placed. It has to exist!):
-HardData2
+HardData
 Image Width:
 250
 Image Height:
