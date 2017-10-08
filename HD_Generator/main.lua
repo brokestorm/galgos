@@ -37,7 +37,7 @@ end
 ---------------------------------LOADING FILES-------------------------------------------
 
 function love.load()
-  
+
   love.window.setTitle("HD Generator - " .. version)
   
 	data = love.filesystem.newFile("HD_config.txt")
@@ -56,11 +56,12 @@ function love.load()
   hd_directory = parameters [6]
 	training_Image.size.x = tonumber(parameters[8])
 	training_Image.size.y = tonumber(parameters[10])
-  scale = tonumber(parameters[12])
-	HD.radius = tonumber(parameters[14])
-  HD.color.red = tonumber(parameters[16])
-  HD.color.green = tonumber(parameters[18])
-  HD.color.blue = tonumber(parameters[20])
+  window_Width = tonumber(parameters[12])
+  window_Height = tonumber(parameters[14])
+	HD.radius = tonumber(parameters[16])
+  HD.color.red = tonumber(parameters[18])
+  HD.color.green = tonumber(parameters[20])
+  HD.color.blue = tonumber(parameters[22])
   
   -- Adjusting Color to a maximum
   if(HD.color.red > 255) then
@@ -71,6 +72,12 @@ function love.load()
   end
   if(HD.color.blue > 255) then
     HD.color.blue = 255
+  end
+  
+  if window_Height <= window_Width then
+    scale = (window_Height) / training_Image.size.x
+  elseif window_Height > window_Width then
+    scale = (window_Width) / training_Image.size.y
   end
   
   -- Adjusting scale to a maximum
