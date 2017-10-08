@@ -1,0 +1,14 @@
+Image Path:
+images/Strebelle_B_W_250x250.jpg
+Hard Data Matrix Path:
+images/Strebelle250x250.csv
+Save Directory (Where HD files will be placed. It has to exits!):
+HardData
+Width:
+250
+Height:
+250
+Window Scale (Default = 1):
+10
+Hard Data Radius Size(Defaut = 1, Values between 0 and 1 will be treated as a pixel):
+7
