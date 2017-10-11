@@ -37,8 +37,24 @@ end
 ---------------------------------LOADING FILES-------------------------------------------
 
 function love.load()
-  love.filesystem.setIdentity('HardData')
+  isCircleCursor = true
+  
+ -- local accessible
+ -- if love.filesystem.isFused() then
+      -- handle the case that mount fails
+      accessible =  love.filesystem.mount('HD_Generator', "HD_Generator")
+    --else
+      -- unfused should not give any trouble
+  --    accessible = true
+  --end
+  
+ -- if not accessible then
+ --   os.exit();
+--  end
+   
   love.window.setTitle("HD Generator - " .. version)
+  
+  
   
 	data = love.filesystem.newFile("HD_config.txt")
 	data:open("r")
@@ -51,17 +67,16 @@ function love.load()
 		i = i + 1
 	end
 	
-  image_Path = parameters[2]
-  matrix_Path = parameters[4]
-  hd_directory = parameters [6]
-	training_Image.size.x = tonumber(parameters[8])
-	training_Image.size.y = tonumber(parameters[10])
-  window_Width = tonumber(parameters[12])
-  window_Height = tonumber(parameters[14])
-	HD.radius = tonumber(parameters[16])
-  HD.color.red = tonumber(parameters[18])
-  HD.color.green = tonumber(parameters[20])
-  HD.color.blue = tonumber(parameters[22])
+  image_Path = (parameters[2])
+  matrix_Path = (parameters[4])
+	training_Image.size.x = tonumber(parameters[6])
+	training_Image.size.y = tonumber(parameters[8])
+  window_Width = tonumber(parameters[10])
+  window_Height = tonumber(parameters[12])
+	HD.radius = tonumber(parameters[14])
+  HD.color.red = tonumber(parameters[16])
+  HD.color.green = tonumber(parameters[18])
+  HD.color.blue = tonumber(parameters[20])
   
   -- Adjusting Color to a maximum
   if(HD.color.red > 255) then
@@ -164,18 +179,30 @@ end
 
 ---------------------------------DRAWING-------------------------------------------
 
+
+
 function love.draw()
 	love.graphics.setColor(255,255,255) 
 
 	love.graphics.draw(training_Image.image, 0,0, 0, scale, scale)
 
 	love.graphics.setColor(HD.color.red,HD.color.green,HD.color.blue)
-	love.graphics.circle("line", cursor.x, cursor.y, (HD.radius * scale), 100)
+  
+  for i=1, HD.numPoints do
+		love.graphics.circle("line", coordX[i], coordY[i], (HD.radius * scale), 100)
+	end	  
+  
+  if isCircleCursor then
+    love.graphics.circle("line", cursor.x, cursor.y, (HD.radius * scale), 100)
+  else
+    img =  love.graphics.newScreenshot( )
+    love.event.quit()
+ end
+ 
+  
 	
 
-	for i=1, HD.numPoints do
-		love.graphics.circle("line", coordX[i], coordY[i], (HD.radius * scale), 100)
-	end	   	  
+	 	  
 end
 
 function love.mousereleased(x, y, button)
@@ -185,27 +212,26 @@ function love.mousereleased(x, y, button)
 end
 
 function love.keypressed(enter)
-  local screenshot = love.graphics.newScreenshot()
-  screenshot:encode('png', os.time() .. '.png')
-	love.event.quit()
+  isCircleCursor = false
+   
+end
+function love.keypressed(escape)
+  isCircleCursor = false
 end
 
-function love.keypressed(escape)
-	love.event.quit()
-end
 
 ---------------------------------QUITING AND MAKING HD FILE-------------------------------------------
 
 function love.quit()
-
+  
   -- open training_Image which will be used to make the matrix
   if not love.filesystem.exists(matrix_Path) then
     print("It was not possible to read the matrix Path")
     os.exit()
   end
   
-  local f = io.open(matrix_Path, "r")
-  
+  local f = love.filesystem.newFile(matrix_Path)
+  f:open("r")
   -- Inicialize Matrix
 	local tbllines = {}
 	for i = 1, training_Image.size.x do
@@ -249,7 +275,7 @@ function love.quit()
       for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
         for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
           if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) <= HD.radius) then
-            if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
+            if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
               count = count + 1
             end
           end
@@ -260,27 +286,38 @@ function love.quit()
     for current=1, HD.numPoints do
       i = math.floor(coordX[current]/scale)
       j = math.floor(coordY[current]/scale)
-      if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
+      if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
         count = count + 1
       end
     end
   end
   
+  time = (os.time()%1000000)
+  directory = ("HardData/" .. time .."_".. "HD_".. count)
+  love.filesystem.createDirectory( directory )
+  img:encode('png', directory .. "/" .. time .. "_HDimage_"..count..'.png');
  
   
   -- print HD points in file txt
-	local file = io.open(hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HD_" .. count .. ".txt", "w")
+	local file = love.filesystem.newFile(directory .. "/" .. time .. "_" .. "HD_" .. count .. ".txt")
+  file:open("w")
+  file:write("TESTE" .. count .. "\n")
+  file:write("4".. "\n")
+  file:write("X".. "\n")
+  file:write("Y".. "\n")
+  file:write("Z".. "\n")
+  
   if(HD.radius >= 1) then
     for current=1, HD.numPoints do
       print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
       for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
         for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
           if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) <= HD.radius) then
-            if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
-              file:write((i) .." ".. (j) .." 0 ".. tbllines[i + 1][j + 1] .."\n")
-              print((i) .." ".. (j) .." -- HD listed ") --tbllines[i][j]
+            if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
+              file:write((i + 1) .." ".. (j + 1) .." 0 ".. tbllines[i + 2][j + 2] .."\n")
+              print((i + 1) .." ".. (j + 1) .." -- HD listed ") --tbllines[i][j]
             else
-              print((i) .." ".. (j) .. "-- It will not be listed") --tbllines[i][j]
+              print((i + 1) .." ".. (j + 1) .. "-- It will not be listed") --tbllines[i][j]
             end
           end
         end
@@ -291,11 +328,11 @@ function love.quit()
       print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
       i = math.floor(coordX[current]/scale)
       j = math.floor(coordY[current]/scale)
-      if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
-        file:write((i) .." ".. (j) .." 0 ".. tbllines[i + 1][j + 1] .."\n")
-        print((i) .." ".. (j) .." -- HD listed ") --tbllines[i][j]
+      if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y -1) and j >= -1) then
+        file:write((i + 1) .." ".. (j + 1) .." 0 ".. tbllines[i + 2][j + 2] .."\n")
+        print((i + 1) .." ".. (j + 1) .." -- HD listed ") --tbllines[i][j]
       else
-        print((i) .." ".. (j) .. "-- It will not be listed") --tbllines[i][j]
+        print((i + 1) .." ".. (j + 1) .. "-- It will not be listed") --tbllines[i][j]
       end
     end
   end
@@ -303,12 +340,12 @@ function love.quit()
   
   --h = training_Image.size.y *scale
   --w = training_Image.size.x *scale
+
   
-  --img =  love.graphics.newScreenshot( )
   --data = img:getString()
   --iData = love.image.newImageData( w, h, data )
   --iData:encode( "png", hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png" )
   --love.filesystem.write(((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png", data)
-  
+ 
 end
 
