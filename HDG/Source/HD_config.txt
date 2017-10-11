@@ -1,0 +1,20 @@
+Image path:
+images/Strebelle_B_W_250x250.jpg
+Hard Data Matrix path:
+images/Strebelle250x250.csv
+Image Width:
+250
+Image Height:
+250
+Window Width:
+1000
+Window Height:
+1000
+Hard Data radius size in pixels (Defaut = 1, Values minor than 1 will be treated as selecting pixels):
+7
+Hard Data Selection color - RED:
+255
+Hard Data Selection color - GREEN:
+0
+Hard Data Selection color - BLUE:
+0

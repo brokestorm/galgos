@@ -38,7 +38,7 @@ end
 
 function love.load()
   isCircleCursor = true
-  
+  HDwasSelected = false
  -- local accessible
  -- if love.filesystem.isFused() then
       -- handle the case that mount fails
@@ -208,6 +208,7 @@ end
 function love.mousereleased(x, y, button)
 	if button == "l" or button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
    		isCircle = true
+		HDwasSelected = true
 	end
 end
 
@@ -223,129 +224,129 @@ end
 ---------------------------------QUITING AND MAKING HD FILE-------------------------------------------
 
 function love.quit()
-  
-  -- open training_Image which will be used to make the matrix
-  if not love.filesystem.exists(matrix_Path) then
-    print("It was not possible to read the matrix Path")
-    os.exit()
-  end
-  
-  local f = love.filesystem.newFile(matrix_Path)
-  f:open("r")
-  -- Inicialize Matrix
-	local tbllines = {}
-	for i = 1, training_Image.size.x do
-		tbllines[i] = {}
-		for j = 1, training_Image.size.y do
-			tbllines[i][j] = 0
+  if(HDwasSelected) then
+  	-- open training_Image which will be used to make the matrix
+  	if not love.filesystem.exists(matrix_Path) then
+  	  print("It was not possible to read the matrix Path")
+  	  os.exit()
+  	end
+  	
+  	local f = love.filesystem.newFile(matrix_Path)
+  	f:open("r")
+  	-- Inicialize Matrix
+		local tbllines = {}
+		for i = 1, training_Image.size.x do
+			tbllines[i] = {}
+			for j = 1, training_Image.size.y do
+				tbllines[i][j] = 0
+			end
 		end
-	end
-  
-  -- read values from the Strebelle_Pixelled
-	local i = 0
-	local j = 0
-  while j < 250 do
-    j =j + 1
-    n1 = 0
-    for i = 1, training_Image.size.x do
-      n1 = f:read(1)
-      
-      if n1 == nil then 
-        break 
-      end
-      if n1 == "," then
-        n1 = f:read(1)
-      end
-      if n1 == "\n" then
-        n1 = f:read(1)
-      end
-      if n1 == "1" or n1 == "2" then
-        tbllines[i][j] = n1
-        --print("<"..i..","..j..">".." - ".. tbllines[i][j])
-      end   
-    end   
-  end
-  
-  f:close()
-  
-  -- Counting Hard Datas
-  local count = 0
-  if(HD.radius >= 1) then
-    for current=1, HD.numPoints do
-      for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
-        for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
-          if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) <= HD.radius) then
-            if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
-              count = count + 1
-            end
-          end
-        end
-      end
-    end
-  elseif (HD.radius < 1 and HD.radius >= 0) then
-    for current=1, HD.numPoints do
-      i = math.floor(coordX[current]/scale)
-      j = math.floor(coordY[current]/scale)
-      if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
-        count = count + 1
-      end
-    end
-  end
-  
-  time = (os.time()%1000000)
-  directory = ("HardData/" .. time .."_".. "HD_".. count)
-  love.filesystem.createDirectory( directory )
-  img:encode('png', directory .. "/" .. time .. "_HDimage_"..count..'.png');
- 
-  
-  -- print HD points in file txt
-	local file = love.filesystem.newFile(directory .. "/" .. time .. "_" .. "HD_" .. count .. ".txt")
-  file:open("w")
-  file:write("TESTE" .. count .. "\n")
-  file:write("4".. "\n")
-  file:write("X".. "\n")
-  file:write("Y".. "\n")
-  file:write("Z".. "\n")
-  
-  if(HD.radius >= 1) then
-    for current=1, HD.numPoints do
-      print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
-      for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
-        for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
-          if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) <= HD.radius) then
-            if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
-              file:write((i + 1) .." ".. (j + 1) .." 0 ".. tbllines[i + 2][j + 2] .."\n")
-              print((i + 1) .." ".. (j + 1) .." -- HD listed ") --tbllines[i][j]
-            else
-              print((i + 1) .." ".. (j + 1) .. "-- It will not be listed") --tbllines[i][j]
-            end
-          end
-        end
-      end
-    end
-  elseif (HD.radius < 1 and HD.radius >= 0) then
-    for current=1, HD.numPoints do
-      print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
-      i = math.floor(coordX[current]/scale)
-      j = math.floor(coordY[current]/scale)
-      if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y -1) and j >= -1) then
-        file:write((i + 1) .." ".. (j + 1) .." 0 ".. tbllines[i + 2][j + 2] .."\n")
-        print((i + 1) .." ".. (j + 1) .." -- HD listed ") --tbllines[i][j]
-      else
-        print((i + 1) .." ".. (j + 1) .. "-- It will not be listed") --tbllines[i][j]
-      end
-    end
-  end
-  file:close()
-  
-  --h = training_Image.size.y *scale
-  --w = training_Image.size.x *scale
-
-  
-  --data = img:getString()
-  --iData = love.image.newImageData( w, h, data )
-  --iData:encode( "png", hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png" )
-  --love.filesystem.write(((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png", data)
- 
+  	
+  	-- read values from the Strebelle_Pixelled
+		local i = 0
+		local j = 0
+  	while j < 250 do
+  	  j =j + 1
+  	  n1 = 0
+  	  for i = 1, training_Image.size.x do
+  	    n1 = f:read(1)
+  	    
+  	    if n1 == nil then 
+  	      break 
+  	    end
+  	    if n1 == "," then
+  	      n1 = f:read(1)
+  	    end
+  	    if n1 == "\n" then
+  	      n1 = f:read(1)
+  	    end
+  	    if n1 == "1" or n1 == "2" then
+  	      tbllines[i][j] = n1
+  	      --print("<"..i..","..j..">".." - ".. tbllines[i][j])
+  	    end   
+  	  end   
+  	end
+  	
+  	f:close()
+  	
+  	-- Counting Hard Datas
+  	local count = 0
+  	if(HD.radius >= 1) then
+  	  for current=1, HD.numPoints do
+  	    for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
+  	      for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
+  	        if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) <= HD.radius) then
+  	          if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
+  	            count = count + 1
+  	          end
+  	        end
+  	      end
+  	    end
+  	  end
+  	elseif (HD.radius < 1 and HD.radius >= 0) then
+  	  for current=1, HD.numPoints do
+  	    i = math.floor(coordX[current]/scale)
+  	    j = math.floor(coordY[current]/scale)
+  	    if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
+  	      count = count + 1
+  	    end
+  	  end
+  	end
+  	
+  	time = (os.time()%1000000)
+  	directory = ("HardData/" .. time .."_".. "HD_".. count)
+  	love.filesystem.createDirectory( directory )
+  	img:encode('png', directory .. "/" .. time .. "_HDimage_"..count..'.png');
+  	
+  	
+  	-- print HD points in file txt
+		local file = love.filesystem.newFile(directory .. "/" .. time .. "_" .. "HD_" .. count .. ".txt")
+  	file:open("w")
+  	file:write("TESTE" .. count .. "\n")
+  	file:write("4".. "\n")
+  	file:write("X".. "\n")
+  	file:write("Y".. "\n")
+  	file:write("Z".. "\n")
+  	
+  	if(HD.radius >= 1) then
+  	  for current=1, HD.numPoints do
+  	    print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
+  	    for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
+  	      for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
+  	        if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) <= HD.radius) then
+  	          if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y - 1) and j >= -1) then
+  	            file:write((i + 1) .." ".. (j + 1) .." 0 ".. tbllines[i + 2][j + 2] .."\n")
+  	            print((i + 1) .." ".. (j + 1) .." -- HD listed ") --tbllines[i][j]
+  	          else
+  	            print((i + 1) .." ".. (j + 1) .. "-- It will not be listed") --tbllines[i][j]
+  	          end
+  	        end
+  	      end
+  	    end
+  	  end
+  	elseif (HD.radius < 1 and HD.radius >= 0) then
+  	  for current=1, HD.numPoints do
+  	    print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
+  	    i = math.floor(coordX[current]/scale)
+  	    j = math.floor(coordY[current]/scale)
+  	    if ((i < training_Image.size.x - 1) and (i >= -1) and (j < training_Image.size.y -1) and j >= -1) then
+  	      file:write((i + 1) .." ".. (j + 1) .." 0 ".. tbllines[i + 2][j + 2] .."\n")
+  	      print((i + 1) .." ".. (j + 1) .." -- HD listed ") --tbllines[i][j]
+  	    else
+  	      print((i + 1) .." ".. (j + 1) .. "-- It will not be listed") --tbllines[i][j]
+  	    end
+  	  end
+  	end
+  	file:close()
+  	
+  	--h = training_Image.size.y *scale
+  	--w = training_Image.size.x *scale
+  	
+  	
+  	--data = img:getString()
+  	--iData = love.image.newImageData( w, h, data )
+  	--iData:encode( "png", hd_directory .. "/" .. ((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png" )
+  	--love.filesystem.write(((os.time())%100000) .. "_" .. "HDimage_" .. count .. ".png", data)
+ end
 end
 
