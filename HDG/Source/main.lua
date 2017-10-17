@@ -12,11 +12,12 @@ end
 
 HD = {
 	radius;
-  color = {
+  color = 255;
+  selection = {
     red,
     green,
     blue
-  };
+    };
 	numPoints = 0;
 }
 
@@ -40,6 +41,7 @@ end
 function love.load()
   isCircleCursor = true
   HDwasSelected = false
+  countDontExists = true
   accessible =  love.filesystem.mount('HD_Generator', "HD_Generator")
   love.window.setTitle("HD Generator - " .. version)
   
@@ -60,6 +62,8 @@ function love.load()
   x = x + 2
 	matrix_Path = (parameters[x])
   x = x + 2
+  number_facies = tonumber(parameters[x])
+  x = x + 2
 	training_Image.size.x = tonumber(parameters[x])
   x = x + 2
 	training_Image.size.y = tonumber(parameters[x])
@@ -69,24 +73,24 @@ function love.load()
 	window_Height = tonumber(parameters[x])
   x = x + 2
 	HD.radius = tonumber(parameters[x])
+  x = x + 2  
+	HD.selection.red = tonumber(parameters[x])
   x = x + 2
-	HD.color.red = tonumber(parameters[x])
+	HD.selection.green = tonumber(parameters[x])
   x = x + 2
-	HD.color.green = tonumber(parameters[x])
-  x = x + 2
-	HD.color.blue = tonumber(parameters[x])
+	HD.selection.blue = tonumber(parameters[x])
   
 	
   
   -- Adjusting Color to a maximum
-  if(HD.color.red > 255) then
-    HD.color.red = 255
+  if(HD.selection.red > 255) then
+    HD.selection.red = 255
   end
-  if(HD.color.green > 255) then
-    HD.color.green = 255
+  if(HD.selection.green > 255) then
+    HD.selection.green = 255
   end
-  if(HD.color.blue > 255) then
-    HD.color.blue = 255
+  if(HD.selection.blue > 255) then
+    HD.selection.blue = 255
   end
   
   if window_Height <= window_Width then
@@ -211,7 +215,8 @@ function love.update(dt)
 	
 	if (isCircle) then			-- ESTE BLOCO NAO PERMITE QUE UM CÍRCULO SOBREESCREVA OUTRO
 		for i=1, HD.numPoints do
-			if((math.abs(coordX[i] - cursor.x)) <= (HD.radius * scale) and (math.floor(coordY[i] - cursor.y) - 1) <= (HD.radius * scale)) then
+			if( (math.abs(coordX[i] - cursor.x))     <= (HD.radius * scale) and
+          (math.abs(coordY[i] - cursor.y) - 1) <= (HD.radius * scale) ) then
 				isCircle = false
 			end			
 		end
@@ -231,23 +236,25 @@ end
 
 function love.draw()
 	
+  HD.color = math.floor(255/(number_facies - 1))
 	--draw training image as a matrix.
 	for i=1, training_Image.size.x do
 		for j=1, training_Image.size.y do
-			love.graphics.setColor(0,0,0)
-			if (training_Image.matrix[i][j] == '2') then
-				love.graphics.setColor(255,255,255)
-			end
-			love.graphics.rectangle("fill", i*scale, j*scale, scale,scale)
+      for w=1, number_facies do
+        if (tonumber(training_Image.matrix[i][j]) == w) then
+          love.graphics.setColor(HD.color * (w - 1), HD.color * (w - 1), HD.color * (w - 1))
+        end
+        love.graphics.rectangle("fill", i*scale, j*scale, scale,scale)
+      end
 		end
 	end
 		
 --	love.graphics.draw(training_Image.image, 0,0, 0, scale, scale)
 
-	love.graphics.setColor(HD.color.red,HD.color.green,HD.color.blue)
+	love.graphics.setColor(HD.selection.red,HD.selection.green,HD.selection.blue)
   
   for i=1, HD.numPoints do
-		love.graphics.circle("line", coordX[i], coordY[i], math.abs(HD.radius * scale), 100)
+		love.graphics.circle("line", coordX[i], coordY[i], math.floor(HD.radius * scale), 100)
 	end	  
   
   if isCircleCursor then
@@ -256,13 +263,13 @@ function love.draw()
   	imgIsCreated = true
     img =  love.graphics.newScreenshot( )
 		love.graphics.clear(255, 255, 255)
-		
+    
+		-- print table
     local i = 16
     local j = 16
-    
     love.graphics.setColor(0, 0, 0)
     love.graphics.print("0", 2, 2)
-		while i < training_Image.size.x do 
+    while i < training_Image.size.x do 
       love.graphics.setColor(0, 0, 0)
       love.graphics.print(i, scale, j*scale + 1)
       love.graphics.print(j, i * scale + 1, scale)
@@ -311,7 +318,7 @@ function love.draw()
   	    end
   	  end
   	end
-    countExists = true
+    countDontExists = false
 		HD_img =  love.graphics.newScreenshot( )
 		
     love.event.quit()
@@ -323,7 +330,7 @@ end
 
 function love.mousereleased(x, y, button)
 	if button == "l" or button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
-   		isCircle = true
+    isCircle = true
 		HDwasSelected = true
 	end
 end
@@ -344,7 +351,7 @@ end
 function love.quit()
     if(HDwasSelected) then
       -- Counting Hard Datas
-      if countExists then
+      if countDontExists then
         local count = 0
         if(HD.radius >= 1) then
           for current=1, HD.numPoints do

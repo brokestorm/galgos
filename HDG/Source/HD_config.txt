@@ -1,5 +1,7 @@
 Hard Data Matrix path:
 images/Strebelle250x250.csv
+Amount of Facies in Training Image:
+2
 Image Width:
 250
 Image Height:
