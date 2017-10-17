@@ -1,5 +1,3 @@
-Image path:
-images/Strebelle_B_W_250x250.jpg
 Hard Data Matrix path:
 images/Strebelle250x250.csv
 Image Width:
