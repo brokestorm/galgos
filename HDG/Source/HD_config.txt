@@ -18,3 +18,7 @@ Hard Data Selection color - GREEN:
 0
 Hard Data Selection color - BLUE:
 0
+Pattern Size (for the grid):
+16
+Overlap Size (for the grid):
+4
