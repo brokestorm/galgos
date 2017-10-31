@@ -25,12 +25,14 @@ training_Image = {
 	image,
 	size={
 		x,
-		y
+		y,
+		z
 	};
 	sgems,
 	matrix = {},
   	overlap,
-  	Pattern
+  	Pattern,
+  	facies
 }
 
 function square(x)
@@ -52,7 +54,7 @@ function love.load()
 	local i = 1
 	local parameters = {}
 	
-	for word in love.filesystem.lines("HD_config.txt", " ") do
+	for word in love.filesystem.lines("HD_config.txt") do
 		parameters[i] = word
 		i = i + 1
 	end
@@ -63,11 +65,15 @@ function love.load()
 	x = x + 2
 	matrix_Path = (parameters[x])
 	x = x + 2
-	number_facies = tonumber(parameters[x])
+	matrix_extension = (parameters[x])
+	x = x + 2
+	training_Image.facies = tonumber(parameters[x])
 	x = x + 2
 	training_Image.size.x = tonumber(parameters[x])
 	x = x + 2
 	training_Image.size.y = tonumber(parameters[x])
+	x = x + 2
+	training_Image.size.z = tonumber(parameters[x])
 	x = x + 2
 	window_Width = tonumber(parameters[x])
 	x = x + 2
@@ -142,50 +148,68 @@ function love.load()
   
   
   -- open training_Image which will be used to make the matrix
-  	if not love.filesystem.exists(matrix_Path) then
-  	  print("It was not possible to read the matrix Path")
-  	  os.exit()
-  	end
-    
-  	local f = love.filesystem.newFile(matrix_Path)
+    local f = love.filesystem.newFile(matrix_Path)
   	f:open("r")
-  	-- Inicialize Matrix
+    if (matrix_extension == "csv" or "txt") then
+  		-- Inicialize Matrix
 		training_Image.matrix = {}
 		for i = 1, training_Image.size.x do
 			training_Image.matrix[i] = {}
 			for j = 1, training_Image.size.y do
-				training_Image.matrix[i][j] = -1
+				training_Image.matrix[i][j] = 0
 			end
 		end
   	
-  	-- read values from the Strebelle_Pixelled
+ 	 	-- read values from the Strebelle_Pixelled
 		local i = 0
 		local j = 0
-    local w = 0
-  	while j < training_Image.size.y do
-  	  j =j + 1
-      i = 0
-      n1 = 0
-  	  while i < training_Image.size.x  do
-  	    i = i + 1
-        n1 = f:read(1)
+   		local w = 0
+  		while j < training_Image.size.y do
+  			j =j + 1
+      		i = 0
+      		n1 = 0
+  	  		while i < training_Image.size.x  do
+  	    		i = i + 1
+        		n1 = f:read(1)
   	    
-  	    if n1 == nil then 
-          --print("We have an error in: <"..i..","..j..">" .. "\n")
-          break end
+  	    		if n1 == nil then 
+         	 	--print("We have an error in: <"..i..","..j..">" .. "\n")
+         	 	break end
           
-        if n1 == '1' or n1 == '2' then
-  	      training_Image.matrix[i][j] = n1
-          --print("<"..i..","..j..">".." - ".. n1)
-  	    else
-          i = i - 1
-        end
+        		if n1 == '1' or n1 == '2' then
+  	      		training_Image.matrix[i][j] = n1
+          		--print("<"..i..","..j..">".." - ".. n1)
+  	    		else
+          			i = i - 1
+        		end
         
-  	  end
-      --print(j)
+  	  		end
+      		--print(j)
       
-  	end
-  	
+  		end
+  	elseif (matrix_extension == "SGEMS" or matrix_extension == "sgems") then
+  		training_Image.matrix = {}
+  		i = 1
+  		value = false
+  		for word in love.filesystem.lines(matrix_path) do
+  			if (value == true) then
+				if((tonumber(word) == 1) or (tonumber(word) == 0)) then
+					training_Image.matrix[i] = word
+					i = i + 1
+				end
+			elseif word == "v" then
+				value = true
+ 			end
+		end
+
+	end
+		training_Image.matrix = {}
+		for word in love.filesystem.lines(matrix_path) do
+			training_Image.matrix[i] = word
+			i = i+1
+			
+		end
+  --
   	f:close()
 	
 	-- Sets image scaled
@@ -241,12 +265,12 @@ end
 
 function love.draw()
 	
-  HD.color = math.floor(255/(number_facies - 1))
+  HD.color = math.floor(255/(training_Image.facies - 1))
 	--draw training image as a matrix.
-	for i=1, training_Image.size.x do
-		for j=1, training_Image.size.y do
-      for w=1, number_facies do
-        if (tonumber(training_Image.matrix[i][j]) == w) then
+	for j=1, training_Image.size.x do
+		for i=1, training_Image.size.y do
+      for w=1, training_Image.facies do
+        if (tonumber(training_Image.matrix[i + (j - 1) * 50]) == w - 1) then
         	love.graphics.setColor(HD.color * (w - 1), HD.color * (w - 1), HD.color * (w - 1))
         end
        		love.graphics.rectangle("fill", (i-1)*scale, (j-1)*scale, scale,scale)
@@ -276,7 +300,7 @@ function love.draw()
     love.graphics.circle("line", cursor.x, cursor.y, (HD.radius * scale), 100)
   else
   	imgIsCreated = true
-    img =  love.graphics.newScreenshot( )
+    img =  love.graphics.newScreenshot()
 		love.graphics.clear(255, 255, 255)
     
 		-- print table
@@ -299,7 +323,7 @@ function love.draw()
     
 		
 		-- Counting Hard Datas
-  	count = 0
+  	local count = 0
   	if(HD.radius >= 1) then
   	  for current=1, HD.numPoints do
         love.graphics.setColor(255,0,0)
@@ -320,7 +344,7 @@ function love.draw()
   	          if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
   	            count = count + 1
                  love.graphics.setColor(0,0,255)
-                 if (training_Image.matrix[i+1][j+1] == '2') then
+                 if (training_Image.matrix[i+1 + (j * 50)] == '1') then
                    love.graphics.setColor(0,255,0)
                  end
                  love.graphics.rectangle("fill", i*scale, j*scale, scale, scale)
@@ -336,7 +360,7 @@ function love.draw()
   	    if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
   	      count = count + 1
            love.graphics.setColor(0,0,255)
-           if (training_Image.matrix[i+1][j+1] == '2') then
+           if (training_Image.matrix[i + 1 + (j * 50)] == '1') then
              love.graphics.setColor(255,0,0)
            end
            love.graphics.rectangle("fill", i*scale, j*scale, scale,scale)
@@ -376,8 +400,33 @@ end
 function love.quit()
     if(HDwasSelected) then
       -- Counting Hard Datas
-      
-        local count = 0
+      local count = 0
+    									 if (training_Image.size.z > 0) then --------------------------------	3D IMAGES	----------------------------------
+        
+        if(HD.radius >= 1) then
+          for current=1, HD.numPoints do
+            for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
+              for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
+                if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) < HD.radius) then
+                  if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
+                    count = count + (1 * training_Image.size.z)
+                  end
+                end
+              end
+            end
+          end
+        elseif (HD.radius < 1 and HD.radius >= 0) then
+          for current=1, HD.numPoints do
+            i = math.floor(coordX[current]/scale)
+            j = math.floor(coordY[current]/scale)
+            if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
+              count = count + (1 * training_Image.size.z)
+            end
+          end
+        end
+         ----------------------------------------------------------------------------------------------	2D IMAGES	------------------------------
+      									else
+		
         if(HD.radius >= 1) then
           for current=1, HD.numPoints do
             for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
@@ -399,7 +448,7 @@ function love.quit()
             end
           end
         end
-      
+      									end
     -- Create the Directories and save the image and the HD_list
       time = (os.time()%1000000)
       directory = ("HardData/" .. time .."_".. "HD_".. count)
@@ -419,8 +468,36 @@ function love.quit()
       file:write("Y".. "\r\n")
       file:write("Z".. "\r\n")
       file:write("facies".. "\r\n")
-      
+								      if (training_Image.size.z > 0) then --------------------------------	3D IMAGES	----------------------------------
       if(HD.radius >= 1) then
+        for current=1, HD.numPoints do
+          print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
+          for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
+            for i = math.floor(coordX[current]/scale) - HD.radius, math.floor(coordX[current]/scale) + HD.radius do 
+              if (math.sqrt(square(math.floor(coordX[current]/scale) - i) + square(math.floor(coordY[current]/scale) - j)) < HD.radius) then
+                if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
+                  --  file:write(i .." ".. j .." 0 ".. training_Image.matrix[i+1 + (j * 50)] .."\r\n")
+                  	--print((i + 1) .." ".. (j + 1) .." -- HD listed ") --training_Image.matrix[i][j]
+                end
+              end
+            end
+          end
+        end
+      elseif (HD.radius < 1 and HD.radius >= 0) then
+        for current=1, HD.numPoints do
+          print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
+          i = math.floor(coordX[current]/scale)
+          j = math.floor(coordY[current]/scale)
+          if ((i < training_Image.size.x ) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
+            file:write(i .." ".. j .." 0 ".. training_Image.matrix[i+1 + (j * 50)] .."\n")
+            --print((i + 1) .." ".. (j + 1) .." -- HD listed ") --training_Image.matrix[i][j]
+          end
+        end
+      end
+
+      ----------------------------------------------------------------------------------------------	2D IMAGES	------------------------------
+      								else
+      									 if(HD.radius >= 1) then
         for current=1, HD.numPoints do
           print("<".. math.floor(coordX[current]/scale) ..", " .. math.floor(coordY[current]/scale) .. "> -- Point selected")
           for j = math.floor(coordY[current]/scale) - HD.radius, math.floor(coordY[current]/scale) + HD.radius do
@@ -440,12 +517,13 @@ function love.quit()
           i = math.floor(coordX[current]/scale)
           j = math.floor(coordY[current]/scale)
           if ((i < training_Image.size.x ) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
-            file:write(i .." ".. j .." 0 ".. training_Image.matrix[i+1][j+1] .."\n")
+            file:write(i .." ".. j .." 0 ".. training_Image.matrix[i+1][J+1] .."\n")
             --print((i + 1) .." ".. (j + 1) .." -- HD listed ") --training_Image.matrix[i][j]
           end
         end
       end
       file:close()
+      							end
  end
 end
 
