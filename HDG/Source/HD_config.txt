@@ -1,13 +1,7 @@
 Hard Data Matrix path:
-C_WLTICAT.sgems
+ti_strebelle.sgems
 Amount of Facies in Training Image:
-3
-Image Size X:
-400
-Image Size Y:
-400
-Image Size Z:
-1
+2
 Hard Data Radial Selection Color:(1 - red, 2 - green, 3 - Orange, 4 - magenta, 5 - yellow, 6 - Blue)
 3
 Hard Data Pixel Selection Color:(1 - red, 2 - green, 3 - Orange, 4 - magenta, 5 - yellow, 6 - Blue)

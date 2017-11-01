@@ -78,12 +78,6 @@ function love.load()
 	matrix_Path = "images/"..(parameters[i])
   i = i + 2
 	training_Image.facies = tonumber(parameters[i])
-	i = i + 2
-	training_Image.size.x = tonumber(parameters[i])
-  i = i + 2
-	training_Image.size.y = tonumber(parameters[i])
-  i = i + 2
-	training_Image.size.z = tonumber(parameters[i])
 	i = i + 2  
 	HD.radial_selection.color = tonumber(parameters[i])
 	i = i + 2
@@ -94,6 +88,29 @@ function love.load()
 	training_Image.overlap = tonumber(parameters[i])
   
   data:close()
+  
+  local f = love.filesystem.newFile(matrix_Path)
+  f:open("r")
+  final = 0
+  while final < 3 do -- reads the size in sgens!
+    n1 = f:read(1)
+    sizeN = n1
+    n1 = f:read(1)
+    while not ((n1 == " ") or (n1 == "\n") or (n1 == "\r")) do
+      sizeN = sizeN .. n1
+      n1 = f:read(1)
+    end
+    
+    if(final == 0) then
+      training_Image.size.x = tonumber(sizeN)
+    elseif(final == 1) then
+      training_Image.size.y = tonumber(sizeN)
+    elseif(final == 2) then
+      training_Image.size.z = tonumber(sizeN)
+    end
+    final = final + 1
+  end
+  f:close()
   
   HD.radius = 4
   -- Selecting Colors
@@ -192,21 +209,20 @@ function love.load()
   end
   
   HD.defaut = HD.radius
-  local f = love.filesystem.newFile(matrix_Path)
-  f:open("r")
+  
   training_Image.matrix = {}
   i = 1
-  value = false
+  value = 0
   for word in love.filesystem.lines(matrix_Path) do
-  	if (value == true) then
+  	if (value > 2) then
       for w=1, training_Image.facies do
         if(tonumber(word) == w - 1) then
 				training_Image.matrix[i] = word
 				i = i + 1
         end
 			end
-		elseif word == "v" or word == "facies" or word == "values" or word == "f" or word == "var" then
-				value = true
+		else
+      value = value + 1
  		end
   end
   f:close()
@@ -279,7 +295,7 @@ function love.draw()
 	end
   
   for i=1, HD.numPoints do
-    if (HD.rad[i] < 1) then
+    if (HD.rad[i] <= 1) then
       love.graphics.setColor(HD.pixel_selection.red,HD.pixel_selection.green,HD.pixel_selection.blue)
       love.graphics.rectangle("line", math.floor(coordX[i] - training_Image.scale.x/2), math.floor(coordY[i] - training_Image.scale.y/2), training_Image.scale.x, training_Image.scale.y)
     else
@@ -294,7 +310,7 @@ function love.draw()
   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
   if isCircleCursor then
     -- PRINT
-    if (HD.radius < 1) then
+    if (HD.radius <= 1) then
         love.graphics.setColor(HD.pixel_selection.red,HD.pixel_selection.green,HD.pixel_selection.blue)
         love.graphics.rectangle("line", math.floor(cursor.x - training_Image.scale.x/2), math.floor(cursor.y - training_Image.scale.x/2), training_Image.scale.x, training_Image.scale.y)
       else
@@ -303,7 +319,7 @@ function love.draw()
       end
     
     distance = HD.radius
-    if(distance < 1) then
+    if(distance <= 1) then
       distance = 1
     end
     
@@ -348,7 +364,7 @@ function love.draw()
     for current=1, HD.numPoints do
       
   	  distance = HD.rad[current]
-      if (distance < 1) then
+      if (distance <= 1) then
         distance = 1 
       end
       
@@ -363,10 +379,10 @@ function love.draw()
   		else
   			love.graphics.print(math.floor(coordX[current]/training_Image.scale.x).. ", "..math.floor(coordY[current]/training_Image.scale.y), coordX[current] + distance * training_Image.scale.x, coordY[current] + distance * training_Image.scale.y)
   		end
-      if(math.floor(HD.rad[current]) >= 1) then
-  	    for j = math.floor(coordY[current]/training_Image.scale.y) - math.floor(HD.rad[current]), math.floor(coordY[current]/training_Image.scale.y) + math.floor(HD.rad[current]) do
-  	      for i = math.floor(coordX[current]/training_Image.scale.x) - math.floor(HD.rad[current]), math.floor(coordX[current]/training_Image.scale.x) + math.floor(HD.rad[current]) do 
-  	        if (math.sqrt(square(math.floor(coordX[current]/training_Image.scale.x) - i) + square(math.floor(coordY[current]/training_Image.scale.y) - j)) < math.floor(HD.rad[current])) then
+      if(math.floor(HD.rad[current]) > 1) then
+  	    for j = math.floor(coordY[current]/training_Image.scale.y - HD.rad[current]), math.floor(coordY[current]/training_Image.scale.y + HD.rad[current]) do
+  	      for i = math.floor(coordX[current]/training_Image.scale.x - HD.rad[current]), math.floor(coordX[current]/training_Image.scale.x + HD.rad[current]) do 
+  	        if (math.sqrt(square(coordX[current]/training_Image.scale.x - i) + square(coordY[current]/training_Image.scale.y - j)) < HD.rad[current]) then
   	          if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
   	            count = count + 1
                 HD.color = math.floor(255/(training_Image.facies - 1))
@@ -380,7 +396,7 @@ function love.draw()
   	        end
   	      end
   	    end
-      elseif (math.floor(HD.rad[current]) < 1 and math.floor(HD.rad[current]) >= 0) then
+      elseif (math.floor(HD.rad[current]) <= 1) then
   	    i = math.floor(coordX[current]/training_Image.scale.x)
   	    j = math.floor(coordY[current]/training_Image.scale.y)
   	    if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
@@ -463,7 +479,7 @@ function interface ()
   end
   pox = pox + (desktop_height / 80)
   love.graphics.setColor(0, 0, 0)
-  love.graphics.print("RADIUS SIZE: ".. HD.radius, training_Image.size.x * training_Image.scale.x + 30, 20 + pox)
+  love.graphics.print("RADIUS SIZE: ".. math.floor(HD.radius), training_Image.size.x * training_Image.scale.x + 30, 20 + pox)
   
   pox = pox + (desktop_height / 80)
   love.graphics.setColor(0, 0, 0)
@@ -501,21 +517,21 @@ function love.mousereleased(x, y, button)
 	elseif button == "r" or button == 2 then
     if(HD.radius > 1) then
       HD.defaut = HD.radius
-      HD.radius = 0.5
+      HD.radius = 0.9
     else
       HD.radius = HD.defaut
     end
     -- Adjusting HD.radius to a minimum
-    if (HD.radius < 0.5) then
-      HD.radius = 0.5
+    if (HD.radius <= 1) then
+      HD.radius = 1
     end
   
     -- Adjusting HD.radius to a maximum
-    if HD.radius * training_Image.scale.x * 2 >= training_Image.size.x * training_Image.scale.x then
-      HD.radius = ((training_Image.size.x) - 10) / (2)
+    if HD.radius * 2 >= training_Image.size.x then
+      HD.radius = ((training_Image.size.x) - 1) / 2
     end
-    if HD.radius * training_Image.scale.y * 2 >= training_Image.size.y * training_Image.scale.y then
-      HD.radius = ((training_Image.size.y) - 10) / (2)
+    if HD.radius * 2 >= training_Image.size.y then
+      HD.radius = ((training_Image.size.y) - 1) / 2
     end
     
   end
@@ -528,16 +544,16 @@ function love.wheelmoved(x, y)
         HD.radius = HD.radius - 1
     end
     -- Adjusting HD.radius to a minimum
-    if (HD.radius < 0.5) then
-      HD.radius = 0.5
+    if (HD.radius <= 1) then
+      HD.radius = 1
     end
   
     -- Adjusting HD.radius to a maximum
-    if HD.radius * training_Image.scale.x * 2 >= training_Image.size.x * training_Image.scale.x then
-      HD.radius = ((training_Image.size.x) - 10) / (2)
+    if HD.radius * 2 >= training_Image.size.x then
+      HD.radius = ((training_Image.size.x) - 1) / 2
     end
-    if HD.radius * training_Image.scale.y * 2 >= training_Image.size.y * training_Image.scale.y then
-      HD.radius = ((training_Image.size.y) - 10) / (2)
+    if HD.radius * 2 >= training_Image.size.y then
+      HD.radius = ((training_Image.size.y) - 1) / 2
     end
 end
 
@@ -565,17 +581,17 @@ function love.quit()
       -- Counting Hard Datas
       local count = 0
         for current=1, HD.numPoints do
-          if(math.floor(HD.rad[current]) >= 1) then
-            for j = math.floor(coordY[current]/training_Image.scale.y) - math.floor(HD.rad[current]), math.floor(coordY[current]/training_Image.scale.y) + math.floor(HD.rad[current]) do
-              for i = math.floor(coordX[current]/training_Image.scale.x) - math.floor(HD.rad[current]), math.floor(coordX[current]/training_Image.scale.x) + math.floor(HD.rad[current]) do 
-                if (math.sqrt(square(math.floor(coordX[current]/training_Image.scale.x) - i) + square(math.floor(coordY[current]/training_Image.scale.y) - j)) < math.floor(HD.rad[current])) then
+          if(math.floor(HD.rad[current]) > 1) then
+            for j = math.floor(coordY[current]/training_Image.scale.y - HD.rad[current]), math.floor(coordY[current]/training_Image.scale.y + HD.rad[current]) do
+              for i = math.floor(coordX[current]/training_Image.scale.x - HD.rad[current]), math.floor(coordX[current]/training_Image.scale.x + HD.rad[current]) do 
+                if (math.sqrt(square(coordX[current]/training_Image.scale.x - i) + square(coordY[current]/training_Image.scale.y - j)) < HD.rad[current]) then
                   if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
                     count = count + (1 * training_Image.size.z)
                   end
                 end
               end
             end
-          elseif (math.floor(HD.rad[current]) < 1 and math.floor(HD.rad[current]) >= 0) then
+          elseif (math.floor(HD.rad[current]) <= 1) then
             i = math.floor(coordX[current]/training_Image.scale.x)
             j = math.floor(coordY[current]/training_Image.scale.y)
             if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and j >= 0) then
@@ -605,7 +621,7 @@ function love.quit()
 
       for current=1, HD.numPoints do
         print("<".. math.floor(coordX[current]/training_Image.scale.x) ..", " .. math.floor(coordY[current]/training_Image.scale.y) .. "> -- Point selected")
-        if(math.floor(HD.rad[current]) >= 1) then
+        if(math.floor(HD.rad[current]) > 1) then
           for k = 1, training_Image.size.z do
             for j = math.floor(coordY[current]/training_Image.scale.y) - math.floor(HD.rad[current]), math.floor(coordY[current]/training_Image.scale.y) + math.floor(HD.rad[current]) do
               for i = math.floor(coordX[current]/training_Image.scale.x) - math.floor(HD.rad[current]), math.floor(coordX[current]/training_Image.scale.x) + math.floor(HD.rad[current]) do 
@@ -622,7 +638,7 @@ function love.quit()
               end
             end
           end
-        elseif (math.floor(HD.rad[current]) < 1 and math.floor(HD.rad[current]) >= 0) then
+        elseif (math.floor(HD.rad[current]) <= 1) then
           i = math.floor(coordX[current]/training_Image.scale.x)
           j = math.floor(coordY[current]/training_Image.scale.y)
           for k = 1, training_Image.size.z do
