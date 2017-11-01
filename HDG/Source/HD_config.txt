@@ -1,27 +1,17 @@
 Hard Data Matrix path:
-images/fold_categorical.SGEMS
-Training Image Extension:
-SGEMS
+checker_TI.SGEMS
 Amount of Facies in Training Image:
 2
-Image X:
-180
-Image Y:
-150
-Image Z:
-120
-Window Width:
-1000
-Window Height:
-1000
-Hard Data radius size in pixels (Defaut = 1, Values minor than 1 will be treated as selecting pixels):
-7
-Hard Data Selection color - RED:
-0
-Hard Data Selection color - GREEN:
-255
-Hard Data Selection color - BLUE:
-0
+Image Size X:
+50
+Image Size Y:
+50
+Image Size Z:
+50
+Hard Data Radial Selection Color:(1 - red, 2 - green, 3 - Orange, 4 - magenta, 5 - yellow, 6 - Blue)
+3
+Hard Data Pixel Selection Color:(1 - red, 2 - green, 3 - Orange, 4 - magenta, 5 - yellow, 6 - Blue)
+4
 Pattern Size (for the grid):
 16
 Overlap Size (for the grid):
