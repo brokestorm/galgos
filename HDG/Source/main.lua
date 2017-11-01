@@ -199,11 +199,13 @@ function love.load()
   value = false
   for word in love.filesystem.lines(matrix_Path) do
   	if (value == true) then
-			if((tonumber(word) == 1) or (tonumber(word) == 0)) then
+      for w=1, training_Image.facies do
+        if(tonumber(word) == w - 1) then
 				training_Image.matrix[i] = word
 				i = i + 1
+        end
 			end
-		elseif word == "v" or word == "facies" or word == "values" or word == "f" then
+		elseif word == "v" or word == "facies" or word == "values" or word == "f" or word == "var" then
 				value = true
  		end
   end
