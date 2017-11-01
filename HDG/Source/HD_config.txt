@@ -1,15 +1,15 @@
 Hard Data Matrix path:
-images/checker_TI.SGEMS
+images/fold_categorical.SGEMS
 Training Image Extension:
 SGEMS
 Amount of Facies in Training Image:
 2
 Image X:
-50
+180
 Image Y:
-50
+150
 Image Z:
-50
+120
 Window Width:
 1000
 Window Height:
