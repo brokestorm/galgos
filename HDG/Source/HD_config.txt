@@ -1,11 +1,9 @@
 Hard Data Matrix path:
-ti_strebelle.sgems
-Amount of Facies in Training Image:
+Maules_Creek_3D.SGEMS
+Hard Data Radial Selection Color:(1 - red, 2 - green, 3 - Blue, 4 - Yellow, 5 - Magenta, Any other - Cian)
 2
-Hard Data Radial Selection Color:(1 - red, 2 - green, 3 - Orange, 4 - magenta, 5 - yellow, 6 - Blue)
-3
-Hard Data Pixel Selection Color:(1 - red, 2 - green, 3 - Orange, 4 - magenta, 5 - yellow, 6 - Blue)
-4
+Hard Data Pixel Selection Color:(1 - red, 2 - green, 3 - Blue, 4 - Yellow, 5 - Magenta, Any other - Cian)
+5
 Pattern Size (for the grid):
 16
 Overlap Size (for the grid):
