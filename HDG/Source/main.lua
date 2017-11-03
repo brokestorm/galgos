@@ -314,10 +314,10 @@ function drawSG()
   if training_Image.image + 1 >= tonumber(HD.simGrid.z1) and training_Image.image + 1 <= tonumber(HD.simGrid.z2) then
     if x1 >= 1 and x1 < training_Image.size.x and x2 > 1 and x2 <= training_Image.size.x and y1 >= 1 and y1 < training_Image.size.y and y2 > 1 and y2 <= training_Image.size.y  then
       love.graphics.setColor(255, 128, 0)
-      love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x1-1) * training_Image.scale.x, (y2-1) * training_Image.scale.y + base)
-      love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base)
-      love.graphics.line((x2-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2-1) * training_Image.scale.x, (y2-1) * training_Image.scale.y + base)
-      love.graphics.line((x1-1) * training_Image.scale.x, (y2-1) * training_Image.scale.y + base, (x2-1) * training_Image.scale.x, (y2-1) * training_Image.scale.y + base)
+      love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x1-1) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
+      love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base)
+      love.graphics.line((x2) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
+      love.graphics.line((x1-1) * training_Image.scale.x, (y2) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
     else
       love.graphics.setColor(255, 128, 0)
       love.graphics.line(0, base, 0, training_Image.size.y * training_Image.scale.y + base)
@@ -556,7 +556,8 @@ function drawHardData()
   local y1 = tonumber(HD.simGrid.y1)
   local x2 = tonumber(HD.simGrid.x2)
   local y2 = tonumber(HD.simGrid.y2)
-  
+  print(training_Image.scale.x)
+  print(training_Image.scale.y)
   local count = 0
   for current=1, HD.numPoints do
     local coord_x = coord.x[current]/training_Image.scale.x
@@ -569,13 +570,11 @@ function drawHardData()
     
     drawSG()  
     -- Draw the hard data!
-    
-    
     if(math.floor(HD.rad[current]) > 1) then
   	  for j = math.floor(coord_y - HD.rad[current]), math.floor(coord_y + HD.rad[current]) do
   	    for i = math.floor(coord_x - HD.rad[current]), math.floor(coord_x + HD.rad[current]) do 
-  	      if (math.sqrt(square(coord.x[current]/training_Image.scale.x - i) + square(coord.y[current]/training_Image.scale.y - j)) < HD.rad[current]) then
-  	        if (i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and (j >= 0) and (i < x2) and (j <  y2) and (i >= x1 - 1) and (j >=  y1 - 1)  then
+  	      if (math.sqrt(square(coord_x - i) + square(coord_y - j)) < HD.rad[current]) then
+  	        if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and (j >= 0) and (i < x2) and (j < y2) and (i >= (x1-1)) and (j >= (y1-1)))  then
   	          count = count + 1
               HD.color = math.floor(255/(training_Image.facies - 1))
               for w=1, training_Image.facies do
@@ -589,9 +588,9 @@ function drawHardData()
   	    end
   	  end
     elseif (math.floor(HD.rad[current]) <= 1) then
-  	  i = coord_x
-  	  j = coord_y
-  	  if (i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and (j >= 0) and (i < x2) and (j <  y2) and (i >= x1 - 1) and (j >=  y1 - 1)  then
+  	  i = math.floor(coord_x)
+  	  j = math.floor(coord_y)
+  	  if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and (j >= 0) and (i < x2) and (j < y2) and (i >= (x1-1)) and (j >= (y1-1)))  then
   	    count = count + 1
         HD.color = math.floor(255/(training_Image.facies - 1))
           for w=1, training_Image.facies do
@@ -707,8 +706,8 @@ end
 
 -- print coordenates (receives the coordenates from training image scaled)
 function prtCoord(x, y, radius)
-  local delta_pixel_x = 10 * training_Image.scale.x
-  local delta_pixel_y = 10 * training_Image.scale.y
+  local delta_pixel_x = 30
+  local delta_pixel_y = 30
   local x1 = tonumber(HD.simGrid.x1)
   local y1 = tonumber(HD.simGrid.y1)
   local x2 = tonumber(HD.simGrid.x2)
@@ -726,10 +725,10 @@ function prtCoord(x, y, radius)
   local limit_y = y2 - 2 * delta_pixel_y - distance
   if (cursor_pox >= (x1 - 1) and cursor_poy >= (y1 - 1) and cursor_pox < x2 and cursor_poy < y2) then
     if cursor_pox > limit_x and cursor_poy > limit_y then -- corner
-      love.graphics.print(cursor_pox - (x1 - 1).. ", "..cursor_poy - (y1 - 1), x - 3 * delta_pixel_x  - distance * training_Image.scale.x, y - delta_pixel_y - distance * training_Image.scale.y)
+      love.graphics.print(cursor_pox - (x1 - 1).. ", "..cursor_poy - (y1 - 1), x - 2 * delta_pixel_x  - distance * training_Image.scale.x, y - delta_pixel_y - distance * training_Image.scale.y)
       
     elseif cursor_pox > limit_x and cursor_poy <= limit_y then -- left
-      love.graphics.print(cursor_pox - (x1 - 1).. ", "..cursor_poy - (y1 - 1), x - 3 * delta_pixel_x - distance * training_Image.scale.x, y + distance * training_Image.scale.y)
+      love.graphics.print(cursor_pox - (x1 - 1).. ", "..cursor_poy - (y1 - 1), x - 2 * delta_pixel_x - distance * training_Image.scale.x, y + distance * training_Image.scale.y)
       
     elseif cursor_pox <= limit_x and cursor_poy > limit_y then -- bottom
       love.graphics.print(cursor_pox - (x1 - 1).. ", "..cursor_poy - (y1 - 1), x + distance * training_Image.scale.x, y - delta_pixel_y - distance * training_Image.scale.y)
@@ -951,7 +950,7 @@ function interface ()
   love.graphics.setColor(255, 80, 0)
   love.graphics.print("DEPTH: ", rectangle_left + 30, 20 + pox)
   love.graphics.setColor(0, 0, 0)
-  love.graphics.print(training_Image.image, rectangle_left + 130, 20 + pox)
+  love.graphics.print(training_Image.image + 1, rectangle_left + 130, 20 + pox)
   
   pox = pox + Distance * 2
   love.graphics.setColor(255, 100, 0)
@@ -1108,7 +1107,9 @@ end
 
 -- Text Input
 function love.textinput(t)
-	text = text .. t
+	if t >= '0' and t <= '9' then
+    text = text .. t
+  end
 end
 --
 
