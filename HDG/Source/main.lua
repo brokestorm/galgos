@@ -289,13 +289,10 @@ function love.draw()
   else ------ FINISHING PROGRAM
     interface() -- Draws interface to Screenshot
     img =  love.graphics.newScreenshot() -- stores Screenshot information
-  	
     drawGrid() -- Clears everything in the window and draws a Grid
     drawHardData()
-    
     interface() -- Draws interface to Screenshot 
     HD_img =  love.graphics.newScreenshot() -- stores Screenshot information
-    
     makeHDList()
     
     love.event.quit()
@@ -311,19 +308,21 @@ function drawSG()
   local y1 = tonumber(HD.simGrid.y1)
   local x2 = tonumber(HD.simGrid.x2)
   local y2 = tonumber(HD.simGrid.y2)
-  if training_Image.image + 1 >= tonumber(HD.simGrid.z1) and training_Image.image + 1 <= tonumber(HD.simGrid.z2) then
-    if x1 >= 1 and x1 < training_Image.size.x and x2 > 1 and x2 <= training_Image.size.x and y1 >= 1 and y1 < training_Image.size.y and y2 > 1 and y2 <= training_Image.size.y  then
-      love.graphics.setColor(255, 128, 0)
-      love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x1-1) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
-      love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base)
-      love.graphics.line((x2) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
-      love.graphics.line((x1-1) * training_Image.scale.x, (y2) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
-    else
-      love.graphics.setColor(255, 128, 0)
-      love.graphics.line(0, base, 0, training_Image.size.y * training_Image.scale.y + base)
-      love.graphics.line(0, base, training_Image.size.x * training_Image.scale.x, base)
-      love.graphics.line(0, training_Image.size.y * training_Image.scale.y + base, 0, training_Image.size.y * training_Image.scale.y + base)
-      love.graphics.line(0, training_Image.size.y * training_Image.scale.y + base, training_Image.size.x * training_Image.scale.x, training_Image.size.y * training_Image.scale.y + base)
+  if not(HD.simGrid.z1 == '') or not(HD.simGrid.z2 == '') then
+    if training_Image.image + 1 >= tonumber(HD.simGrid.z1) and training_Image.image + 1 <= tonumber(HD.simGrid.z2) then
+      if x1 >= 1 and x1 < training_Image.size.x and x2 > 1 and x2 <= training_Image.size.x and y1 >= 1 and y1 < training_Image.size.y and y2 > 1 and y2 <= training_Image.size.y  then
+        love.graphics.setColor(255, 128, 0)
+        love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x1-1) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
+        love.graphics.line((x1-1) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base)
+        love.graphics.line((x2) * training_Image.scale.x, (y1-1) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
+        love.graphics.line((x1-1) * training_Image.scale.x, (y2) * training_Image.scale.y + base, (x2) * training_Image.scale.x, (y2) * training_Image.scale.y + base)
+      else
+        love.graphics.setColor(255, 128, 0)
+        love.graphics.line(0, base, 0, training_Image.size.y * training_Image.scale.y + base)
+        love.graphics.line(0, base, training_Image.size.x * training_Image.scale.x, base)
+        love.graphics.line(0, training_Image.size.y * training_Image.scale.y + base, 0, training_Image.size.y * training_Image.scale.y + base)
+        love.graphics.line(0, training_Image.size.y * training_Image.scale.y + base, training_Image.size.x * training_Image.scale.x, training_Image.size.y * training_Image.scale.y + base)
+      end
     end
   end
 end
@@ -398,7 +397,7 @@ function changingSGBoxes()
   
   -- changing z2
   HD.simGrid.z2 = writing(sixthIsWriting, HD.simGrid.z2)
-  if HD.simGrid.z2 == nil or  HD.simGrid.z1 == '' then
+  if HD.simGrid.z2 == nil or  HD.simGrid.z2 == '' then
     HD.simGrid.z2 = 0
     else
     if not(sixthIsWriting) and tonumber(HD.simGrid.z2) < 1 then
@@ -556,8 +555,6 @@ function drawHardData()
   local y1 = tonumber(HD.simGrid.y1)
   local x2 = tonumber(HD.simGrid.x2)
   local y2 = tonumber(HD.simGrid.y2)
-  print(training_Image.scale.x)
-  print(training_Image.scale.y)
   local count = 0
   for current=1, HD.numPoints do
     local coord_x = coord.x[current]/training_Image.scale.x
@@ -573,7 +570,7 @@ function drawHardData()
     if(math.floor(HD.rad[current]) > 1) then
   	  for j = math.floor(coord_y - HD.rad[current]), math.floor(coord_y + HD.rad[current]) do
   	    for i = math.floor(coord_x - HD.rad[current]), math.floor(coord_x + HD.rad[current]) do 
-  	      if (math.sqrt(square(coord_x - i) + square(coord_y - j)) < HD.rad[current]) then
+  	      if (math.sqrt(square(math.floor(coord_x) - i) + square(math.floor(coord_y) - j)) < math.floor(HD.rad[current])) then
   	        if ((i < training_Image.size.x) and (i >= 0) and (j < training_Image.size.y) and (j >= 0) and (i < x2) and (j < y2) and (i >= (x1-1)) and (j >= (y1-1)))  then
   	          count = count + 1
               HD.color = math.floor(255/(training_Image.facies - 1))
@@ -663,7 +660,7 @@ function makeHDList()
                 if (tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) == nil) then
                   print(i .." "..j.." "..k.. " is nil")
                 else
-                  file:write(i - x1 .." ".. j - y1 .." "..(k - 1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
+                  file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k - 1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
                 end
               end
             end
@@ -678,7 +675,7 @@ function makeHDList()
           if (tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) == nil) then
             print(i .." "..j .." "..k.. "is nil")
           else
-            file:write(i - x1 .." ".. j - y1 .." "..(k - 1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
+            file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k - 1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
           end
         end
       end
@@ -1065,7 +1062,17 @@ function love.mousereleased(x, y, button)
       fifthIsWriting = false
       sixthIsWriting = true
       text = tostring(HD.simGrid.z2)
-    end    
+    else 
+      firstIsWriting = false
+      secondIsWriting = false
+      thirdIsWriting = false
+      forthIsWriting = false
+      fifthIsWriting = false
+      sixthIsWriting = false
+      text = ''
+      text_buffer = ''
+    end
+    
   
 	elseif button == "r" or button == 2 then
     if(HD.radius > 1) then
