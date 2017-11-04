@@ -1,0 +1,32 @@
+Pattern Size (for the grid):
+20
+Overlap Size (for the grid):
+4
+Simulation grid x1:
+1
+Simulation grid x2:
+250
+Simulation grid y1:
+1
+Simulation grid y2:
+250
+Simulation grid z1:
+1
+Simulation grid z2:
+1
+Hard Data Radial Selection Color: red
+255
+Hard Data Radial Selection Color: green
+0
+Hard Data Radial Selection Color: blue
+0
+Hard Data Pixel Selection Color: red
+0
+Hard Data Pixel Selection Color: green
+255
+Hard Data Pixel Selection Color: blue
+0
+HD Radius:
+7
+Folder which contains the images:
+images

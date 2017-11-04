@@ -1,10 +1,10 @@
 love.exe Source
 
 echo %APPDATA%
-xcopy "%APPDATA%\LOVE\HD_Generator" /s /y
+xcopy "%APPDATA%\LOVE\HD_Generator" "Source"/s /y
+
 
 cd /d c:
-
 cd "%APPDATA%\LOVE\HD_Generator"
 del "%APPDATA%\LOVE\HD_Generator\HardData" /s /q
 
