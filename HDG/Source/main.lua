@@ -133,13 +133,13 @@ function love.load()
   hd_buffer = 0
 
   last_state_b = 1
-  ---- Adjusting HD.radius to a minimum
+  -- Adjusting HD.radius to a minimum
   --if (HD.radius < 0.5) then
   --  HD.radius = 0.5
   --end
   --
   --
-  ---- Adjusting HD.radius to a maximum
+  ----Adjusting HD.radius to a maximum
   --if HD.radius * training_Image.scale.x * 2 >= training_Image.size.x * training_Image.scale.x then
   --  HD.radius = ((training_Image.size.x) - 10) / (2)
   --end
