@@ -64,10 +64,10 @@ function love.load()
     w = {},
     h = {},
     state = {};
-    lim_x,
-    lim_y,
-    lim_w,
-    lim_h,
+    lim_x=0,
+    lim_y=0,
+    lim_w=0,
+    lim_h=0,
   }
   --
   block_w = {
@@ -129,17 +129,18 @@ function love.load()
   startButton_y = 0
   startButton_w = 0
   startButton_h = 0
+  block_s.
   ti_buffer = 0
   hd_buffer = 0
 
   last_state_b = 1
-  -- Adjusting HD.radius to a minimum
+  ---- Adjusting HD.radius to a minimum
   --if (HD.radius < 0.5) then
   --  HD.radius = 0.5
   --end
   --
   --
-  ----Adjusting HD.radius to a maximum
+  ---- Adjusting HD.radius to a maximum
   --if HD.radius * training_Image.scale.x * 2 >= training_Image.size.x * training_Image.scale.x then
   --  HD.radius = ((training_Image.size.x) - 10) / (2)
   --end
@@ -181,6 +182,10 @@ function love.load()
   
   for k = 1, 14 do
     block_w.state[k] = false -- pattern size
+	block_s.x[k] = 0
+	block_s.y[k] = 0
+	block_s.w[k] = 0
+	block_s.h[k] = 0
   end
   
   
@@ -193,6 +198,7 @@ function saveConfig ()
   file:open("w")
   
   for k = 1, amountBlocks do
+    print(parameters[2*k - 1])
     file:write(parameters[2*k - 1] .. "\r\n")
     file:write(block_w.value[k] .. "\r\n")
   end
@@ -436,7 +442,7 @@ function love.draw()
     
     love.graphics.setColor(255,255,255)
     love.graphics.draw(canvas, 0, 0)
-    drawHDSelected()
+	drawHDSelected()
     drawSG()
     
     if isSelecting then
