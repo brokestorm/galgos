@@ -193,7 +193,6 @@ function saveConfig ()
   file:open("w")
   
   for k = 1, amountBlocks do
-    print(parameters[2*k - 1])
     file:write(parameters[2*k - 1] .. "\r\n")
     file:write(block_w.value[k] .. "\r\n")
   end
@@ -437,7 +436,7 @@ function love.draw()
     
     love.graphics.setColor(255,255,255)
     love.graphics.draw(canvas, 0, 0)
-	drawHDSelected()
+    drawHDSelected()
     drawSG()
     
     if isSelecting then
