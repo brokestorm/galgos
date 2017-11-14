@@ -442,7 +442,7 @@ function love.draw()
     
     love.graphics.setColor(255,255,255)
     love.graphics.draw(canvas, 0, 0)
-	drawHDSelected()
+    drawHDSelected()
     drawSG()
     
     if isSelecting then
@@ -749,7 +749,7 @@ function makeHDList()
                 if (tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) == nil) then
                   print(i .." "..j.." "..k.. " is nil")
                 else
-                  file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k - 1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
+                  file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
                 end
               end
             end
@@ -764,7 +764,7 @@ function makeHDList()
           if (tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) == nil) then
             print(i .." "..j .." "..k.. "is nil")
           else
-            file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k - 1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
+            file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
           end
         end
       end
