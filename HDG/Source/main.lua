@@ -741,7 +741,7 @@ function makeHDList()
   for current=1, HD.numPoints do
     print("<".. math.floor(coord.x[current]/training_Image.scale.x) ..", " .. math.floor((coord.y[current])/training_Image.scale.y) .. "> -- Point selected")
     if(math.floor(HD.rad[current]) > 1) then
-      for k = 1, training_Image.size.z do
+      for k = z1, z2 do
         for j = math.floor(coord.y[current]/training_Image.scale.y) - math.floor(HD.rad[current]), math.floor(coord.y[current]/training_Image.scale.y) + math.floor(HD.rad[current]) do
           for i = math.floor(coord.x[current]/training_Image.scale.x) - math.floor(HD.rad[current]), math.floor(coord.x[current]/training_Image.scale.x) + math.floor(HD.rad[current]) do 
             if (math.sqrt(square(math.floor(coord.x[current]/training_Image.scale.x) - i) + square(math.floor(coord.y[current]/training_Image.scale.y) - j)) < math.floor(HD.rad[current])) then
@@ -749,7 +749,7 @@ function makeHDList()
                 if (tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) == nil) then
                   print(i .." "..j.." "..k.. " is nil")
                 else
-                  file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
+                  file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k + 1 - z1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
                 end
               end
             end
@@ -764,7 +764,7 @@ function makeHDList()
           if (tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) == nil) then
             print(i .." "..j .." "..k.. "is nil")
           else
-            file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
+            file:write(i - (x1 - 1) .." ".. j - (y1 - 1) .." "..(k + 1 - z1).." "..( tonumber(training_Image.matrix[faciesIterator3D(i + 1, j + 1, k - 1)]) + 1 ).."\r\n")
           end
         end
       end
